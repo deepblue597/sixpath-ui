@@ -1,16 +1,7 @@
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 import { Fragment } from "react/jsx-runtime";
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number,
-) {
-  return { name, calories, fat, carbs, protein };
-}
 
 const rows = [
   { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
@@ -24,6 +15,22 @@ const rows = [
   { id: 9, lastName: "Roxie", firstName: "Harvey", age: 65 },
 ];
 
+const cols: GridColDef[] = [
+  { field: "id", headerName: "ID", width: 70 },
+  { field: "lastName", headerName: "Last name", width: 130 },
+  { field: "firstName", headerName: "First name", width: 130 },
+  { field: "age", headerName: "Age", type: "number", width: 90 },
+];
+
+const columns = cols.map((col) => ({
+  ...col,
+  renderCell: (params: GridRenderCellParams) =>
+    params.value == null ? (
+      <em style={{ color: "red" }}>No data</em>
+    ) : (
+      params.value
+    ),
+}));
 const paginationModel = { page: 0, pageSize: 5 };
 
 function Table() {
@@ -35,12 +42,7 @@ function Table() {
       <Paper style={{ height: 400 }}>
         <DataGrid
           rows={rows}
-          columns={[
-            { field: "id", headerName: "ID", width: 70 },
-            { field: "lastName", headerName: "Last name", width: 130 },
-            { field: "firstName", headerName: "First name", width: 130 },
-            { field: "age", headerName: "Age", type: "number", width: 90 },
-          ]}
+          columns={columns}
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}
           checkboxSelection

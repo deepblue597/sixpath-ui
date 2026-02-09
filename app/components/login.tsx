@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Card, Typography } from "@mui/material";
+import Image from "next/image";
 
 function Login() {
   const [name, setName] = useState("");
@@ -22,8 +23,11 @@ function Login() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        backgroundColor: "#f5f5f5",
       }}>
-      <Typography variant="h3" gutterBottom>
+      <Image src="/logo1.png" alt="SixPath Logo" width={200} height={100} />
+
+      <Typography variant="h3" gutterBottom color="primary">
         Welcome to SixPath
       </Typography>
       <form
@@ -40,7 +44,7 @@ function Login() {
           value={name}
           onChange={(e) => setName(e.target.value)}
           variant="outlined"
-          label="Name"
+          label="Username"
         />
         <TextField
           value={password}
@@ -49,10 +53,27 @@ function Login() {
           label="Password"
           type="password"
         />
-        <Button type="submit" variant="contained">
-          Submit
-        </Button>
+        <Box
+          style={{
+            marginTop: 20,
+            gap: 50,
+            display: "flex",
+          }}>
+          <Button type="submit" variant="contained" color="secondary">
+            Login
+          </Button>
+          <Button variant="text" color="primary">
+            Sign Up
+          </Button>
+        </Box>
       </form>
+      {submitted && (
+        <Box mt={2}>
+          <Typography variant="h6">Submitted Data:</Typography>
+          <Typography>Name: {submitted.name}</Typography>
+          <Typography>Password: {submitted.password}</Typography>
+        </Box>
+      )}
     </Card>
   );
 }

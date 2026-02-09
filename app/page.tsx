@@ -20,15 +20,14 @@ export default function Home() {
 
   return (
     <Box
-    // sx={{
-    //   alignItems: "center",
-    //   justifyContent: "center",
-    //   display: "flex",
-    //   height: "100vh",
-    // }}
-    >
+      sx={{
+        alignItems: "center",
+        justifyContent: "center",
+        display: "flex",
+        height: "100vh",
+      }}>
       <Login />
-      <Table />
+      {/* <Table /> */}
     </Box>
   );
 }
