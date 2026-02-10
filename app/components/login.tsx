@@ -3,7 +3,7 @@ import { Box, Button, TextField, Card, Typography } from "@mui/material";
 import Image from "next/image";
 
 function Login() {
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); // Basically 2 elements on the parameter the second the func that updates the element
   const [password, setPassword] = useState("");
   const [submitted, setSubmitted] = useState<{
     name: string;

@@ -2,6 +2,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import Paper from "@mui/material/Paper";
 import { Typography } from "@mui/material";
 import { Fragment } from "react/jsx-runtime";
+import { useState } from "react";
 
 const rows = [
   { id: 1, lastName: "Snow", firstName: "Jon", age: 35 },
@@ -33,7 +34,13 @@ const columns = cols.map((col) => ({
 }));
 const paginationModel = { page: 0, pageSize: 5 };
 
+const handleClick = (row: object) => {
+  console.log(row);
+};
+
 function Table() {
+  const [selectedRow, setSelectedRow] = useState<object | null>(null);
+
   return (
     <>
       <Typography variant="h3" gutterBottom>
@@ -43,12 +50,25 @@ function Table() {
         <DataGrid
           rows={rows}
           columns={columns}
+          onRowClick={(params) => {
+            const row = params.row; /// Access the clicked row data
+            setSelectedRow(row);
+            handleClick(row);
+          }}
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}
           checkboxSelection
           sx={{ border: 0 }}
         />
       </Paper>
+      {selectedRow && (
+        <Fragment>
+          <Typography variant="h5" gutterBottom style={{ marginTop: 20 }}>
+            Selected Row Details:
+          </Typography>
+          <pre>{JSON.stringify(selectedRow, null, 2)}</pre>
+        </Fragment>
+      )}
     </>
   );
 }
