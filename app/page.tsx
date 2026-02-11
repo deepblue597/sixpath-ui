@@ -26,6 +26,17 @@ import TravelCardData from "../data";
 import React from "react";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import HomeIcon from "@mui/icons-material/Home";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ContactsIcon from "@mui/icons-material/Contacts";
+import GroupIcon from "@mui/icons-material/Group";
+import PeopleList from "./components/personCard";
+import PersonData from "../personsData";
+interface DrawerItem {
+  text: string;
+  icon: React.ElementType;
+  onClick?: () => void;
+}
 
 export default function Home() {
   const [open, setOpen] = React.useState(false);
@@ -34,27 +45,27 @@ export default function Home() {
     setOpen(newOpen);
   };
 
+  const drawerList: DrawerItem[] = [
+    { text: "Home", icon: HomeIcon },
+    { text: "Profile", icon: AccountCircleIcon },
+    { text: "Contacts", icon: ContactsIcon },
+    { text: "Connections", icon: GroupIcon },
+    { text: "References", icon: InboxIcon },
+  ];
+
   const DrawerList = (
     <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {drawerList.map(({ text, icon: Icon }) => (
+          <ListItem
+            onClick={() => {
+              console.log(text);
+            }}
+            key={text}
+            disablePadding>
             <ListItemButton>
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <Icon />
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -108,15 +119,32 @@ export default function Home() {
       /> */}
       <HeaderBar onClick={toggleDrawer(true)} />
       <Drawer open={open} onClose={toggleDrawer(false)}>
-        {DrawerList}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%", // important!
+          }}>
+          <Box sx={{ flexGrow: 1 }}>{DrawerList}</Box>
+
+          <Divider />
+
+          <Box sx={{ p: 2 }}>
+            <Typography variant="caption" color="text.secondary">
+              SixPath 1.0.0
+            </Typography>
+          </Box>
+        </Box>
       </Drawer>
-      <TravelCard
+      {/* <TravelCard
         travelData={TravelCardData}
         onClick={(card) => {
           console.log("Clicked on:", card);
           // Handle navigation or any other action
         }}
-      />
+      /> */}
+
+      <PeopleList people={PersonData} />
     </Box>
   );
 }
