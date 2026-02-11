@@ -1,0 +1,76 @@
+const connectionData = [
+  {
+    id: 1,
+    person1_id: 1,
+    person2_id: 2,
+    relationship: "Colleagues",
+    strength: 4,
+    context: "Worked together on a project",
+    last_interaction: "2023-10-01",
+    notes:
+      "Met at a conference in 2020. Collaborated on a project in 2021. Regularly keep in touch.",
+    created_at: "2023-10-01T12:00:00Z",
+  },
+  {
+    id: 2,
+    person1_id: 1,
+    person2_id: 3,
+    relationship: "Friends",
+    strength: 5,
+    context: "Met through a mutual friend",
+    last_interaction: "2023-09-15",
+    notes: "Became friends in 2021. Regularly hang out and support each other.",
+    created_at: "2023-09-15T12:00:00Z",
+    updated_at: "2023-10-01T12:00:00Z",
+  },
+  {
+    id: 3,
+    person1_id: 2,
+    person2_id: 4,
+    relationship: "Acquaintances",
+    strength: 2,
+    context: "Met at a networking event",
+    last_interaction: "2023-08-20",
+    notes:
+      "Met at a networking event in 2018. Occasionally exchange messages on LinkedIn.",
+    created_at: "2023-08-20T12:00:00Z",
+  },
+  {
+    id: 4,
+    person1_id: 3,
+    person2_id: 4,
+    relationship: "Colleagues",
+    strength: 3,
+    context: "Worked together on a project",
+    last_interaction: "2023-07-10",
+    notes:
+      "Collaborated on a project in 2022. Occasionally check in with each other.",
+    created_at: "2023-07-10T12:00:00Z",
+  },
+  {
+    id: 5,
+    person1_id: 1,
+    person2_id: 4,
+    relationship: "Mentor-Mentee",
+    strength: 5,
+    context: "Mentored in career development",
+    last_interaction: "2023-10-05",
+    notes:
+      "Started mentoring relationship in 2020. Regularly meet to discuss career goals and development.",
+    created_at: "2023-10-05T12:00:00Z",
+    updated_at: "2023-10-10T12:00:00Z",
+  },
+  {
+    id: 6,
+    person1_id: 2,
+    person2_id: 3,
+    relationship: "Friends",
+    strength: 4,
+    context: "Met through a mutual friend",
+    last_interaction: "2023-09-20",
+    notes: "Became friends in 2021. Regularly hang out and support each other.",
+    created_at: "2023-09-20T12:00:00Z",
+  },
+];
+
+export default connectionData;

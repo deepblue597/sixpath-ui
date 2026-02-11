@@ -32,6 +32,8 @@ import ContactsIcon from "@mui/icons-material/Contacts";
 import GroupIcon from "@mui/icons-material/Group";
 import PeopleList from "./components/personCard";
 import PersonData from "../personsData";
+import connectionData from "../connectionData";
+import ReferralData from "../referralData";
 interface DrawerItem {
   text: string;
   icon: React.ElementType;
@@ -144,7 +146,13 @@ export default function Home() {
         }}
       /> */}
 
-      <PeopleList people={PersonData} />
+      {/* <PeopleList people={PersonData} /> */}
+      <Table
+        data={ReferralData}
+        onClick={(row) => {
+          console.log(row);
+        }}
+      />
     </Box>
   );
 }
