@@ -154,80 +154,83 @@ function Form({ mode, initialData, onSubmit, onCancel }: FormProps) {
   };
 
   return (
-    <Card
-      elevation={8}
-      sx={{
-        width: "40%",
-        padding: 4,
-        alignContent: "center",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}>
-      <Typography variant="h3" gutterBottom color="primary">
-        {title}
-      </Typography>
+    <Box sx={{ display: "flex", justifyContent: "center", mt: 5 }}>
+      <Card
+        elevation={8}
+        sx={{
+          width: "40%",
+          padding: 4,
+          alignContent: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}>
+        <Typography variant="h3" gutterBottom color="primary">
+          {title}
+        </Typography>
 
-      <form onSubmit={handleSubmit}>
-        <Grid
-          container
-          spacing={2}
-          sx={{
-            justifyContent: "center",
-          }}>
-          {fieldsToShow.map((key) => {
-            const value = form[key];
-            const isRequired = requiredFields.includes(key);
+        <form onSubmit={handleSubmit}>
+          <Grid
+            container
+            spacing={2}
+            sx={{
+              justifyContent: "center",
+            }}>
+            {fieldsToShow.map((key) => {
+              const value = form[key];
+              const isRequired = requiredFields.includes(key);
 
-            return (
-              <Grid key={key} size={5}>
-                <TextField
-                  fullWidth
-                  required={isRequired}
-                  id={key}
-                  name={key}
-                  label={key
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (l) => l.toUpperCase())}
-                  type={
-                    key === "password"
-                      ? "password"
-                      : key === "email"
-                        ? "email"
-                        : "text"
-                  }
-                  value={value || ""}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
-                  variant="outlined"
-                  margin="normal"
-                  helperText={isRequired ? "Required field" : ""}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
+              return (
+                <Grid key={key} size={5}>
+                  <TextField
+                    fullWidth
+                    required={isRequired}
+                    id={key}
+                    name={key}
+                    label={key
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
+                    type={
+                      key === "password"
+                        ? "password"
+                        : key === "email"
+                          ? "email"
+                          : "text"
+                    }
+                    value={value || ""}
+                    onChange={(e) => handleInputChange(key, e.target.value)}
+                    variant="outlined"
+                    margin="normal"
+                    helperText={isRequired ? "Required field" : ""}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
 
-        <Box sx={{ mt: 3, display: "flex", gap: 2, justifyContent: "center" }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="secondary"
-            size="large">
-            {submitButtonText}
-          </Button>
-          {onCancel && (
+          <Box
+            sx={{ mt: 3, display: "flex", gap: 2, justifyContent: "center" }}>
             <Button
-              type="button"
-              variant="outlined"
+              type="submit"
+              variant="contained"
               color="secondary"
-              size="large"
-              onClick={onCancel}>
-              Cancel
+              size="large">
+              {submitButtonText}
             </Button>
-          )}
-        </Box>
-      </form>
-    </Card>
+            {onCancel && (
+              <Button
+                type="button"
+                variant="outlined"
+                color="secondary"
+                size="large"
+                onClick={onCancel}>
+                Cancel
+              </Button>
+            )}
+          </Box>
+        </form>
+      </Card>
+    </Box>
   );
 }
 
