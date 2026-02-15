@@ -1,9 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import Login from "./components/login";
 
 export default function Home() {
-  return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4">Home Page</Typography>
-    </Box>
-  );
+  return <Login />;
 }

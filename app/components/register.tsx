@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { AccountCreate } from "../models/InputModels";
 import {
+  Box,
   Button,
   Card,
   Grid,
@@ -51,117 +52,105 @@ function Register() {
   const rightFields = fieldNames.slice(mid);
 
   return (
-    <Card
-      elevation={8}
+    <Box
       sx={{
-        padding: 4,
-        alignContent: "center",
+        height: "100vh",
         display: "flex",
-        flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
       }}>
-      <Typography variant="h3" gutterBottom color="primary">
-        Create a new account
-      </Typography>
-      <form
-        style={{
-          padding: 13,
-          gap: 15,
+      <Card
+        elevation={8}
+        sx={{
+          padding: 4,
           alignContent: "center",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-        }}
-        onSubmit={handleSubmit}>
-        <Grid container spacing={2}>
-          <Grid>
-            {leftFields.map((fieldName) => (
-              <Item key={fieldName}>
-                <TextField
-                  key={fieldName}
-                  id={fieldName}
-                  name={fieldName}
-                  label={fieldName
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (l) => l.toUpperCase())}
-                  type={
-                    fieldName === "password"
-                      ? "password"
-                      : fieldName === "email"
-                        ? "email"
-                        : "text"
-                  }
-                  value={form[fieldName] ?? ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-              </Item>
-            ))}
+        }}>
+        <Typography variant="h3" gutterBottom color="primary">
+          Create a new account
+        </Typography>
+        <form
+          style={{
+            padding: 13,
+            gap: 15,
+            alignContent: "center",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+          onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid>
+              {leftFields.map((fieldName) => (
+                <Item key={fieldName}>
+                  <TextField
+                    key={fieldName}
+                    id={fieldName}
+                    name={fieldName}
+                    label={fieldName
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
+                    type={
+                      fieldName === "password"
+                        ? "password"
+                        : fieldName === "email"
+                          ? "email"
+                          : "text"
+                    }
+                    value={form[fieldName] ?? ""}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                </Item>
+              ))}
+            </Grid>
+            <Grid>
+              {rightFields.map((fieldName) => (
+                <Item key={fieldName}>
+                  <TextField
+                    key={fieldName}
+                    id={fieldName}
+                    name={fieldName}
+                    label={fieldName
+                      .replace(/_/g, " ")
+                      .replace(/\b\w/g, (l) => l.toUpperCase())}
+                    type={
+                      fieldName === "password"
+                        ? "password"
+                        : fieldName === "email"
+                          ? "email"
+                          : "text"
+                    }
+                    value={form[fieldName] ?? ""}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{ mb: 2 }}
+                  />
+                </Item>
+              ))}
+            </Grid>
           </Grid>
-          <Grid>
-            {rightFields.map((fieldName) => (
-              <Item key={fieldName}>
-                <TextField
-                  key={fieldName}
-                  id={fieldName}
-                  name={fieldName}
-                  label={fieldName
-                    .replace(/_/g, " ")
-                    .replace(/\b\w/g, (l) => l.toUpperCase())}
-                  type={
-                    fieldName === "password"
-                      ? "password"
-                      : fieldName === "email"
-                        ? "email"
-                        : "text"
-                  }
-                  value={form[fieldName] ?? ""}
-                  onChange={handleChange}
-                  fullWidth
-                  sx={{ mb: 2 }}
-                />
-              </Item>
-            ))}
-          </Grid>
-        </Grid>
-        <Button type="submit" variant="contained" color="secondary">
-          Register
-        </Button>
-      </form>
-      {/* {form && ( // Display submitted data for testing
+          <Button type="submit" variant="contained" color="secondary">
+            Register
+          </Button>
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => router.push("/")}>
+            Already have an account? Log in
+          </Button>
+        </form>
+        {/* {form && ( // Display submitted data for testing
         <div style={{ marginTop: 20 }}>
           <h3>Submitted Data:</h3>
           <pre>{JSON.stringify(form, null, 2)}</pre>
         </div>
       )} */}
-    </Card>
-    // <div>
-    //   {fieldNames
-    //     .filter((field) => field !== "is_me") // Skip non-user fields
-    //     .map((fieldName) => (
-    //       <div key={fieldName}>
-    //         <label htmlFor={fieldName}>
-    //           {fieldName
-    //             .replace(/_/g, " ")
-    //             .replace(/\b\w/g, (l) => l.toUpperCase())}
-    //         </label>
-    //         <input
-    //           id={fieldName}
-    //           name={fieldName}
-    //           type={
-    //             fieldName === "password"
-    //               ? "password"
-    //               : fieldName === "email"
-    //                 ? "email"
-    //                 : "text"
-    //           }
-    //           value={form[fieldName] ?? ""}
-    //           onChange={handleChange}
-    //         />
-    //       </div>
-    //     ))}
-    // </div>
+      </Card>
+    </Box>
   );
 }
 

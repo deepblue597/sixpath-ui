@@ -41,7 +41,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   };
 
   const drawerList: DrawerItem[] = [
-    { text: "Home", icon: HomeIcon, href: "/" },
+    { text: "Home", icon: HomeIcon, href: "/home" },
     { text: "Profile", icon: AccountCircleIcon, href: "/profile" },
     { text: "Contacts", icon: ContactsIcon, href: "/contacts" },
     { text: "Connections", icon: GroupIcon, href: "/connections" },
@@ -57,7 +57,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <ListItem key={text} disablePadding>
               <Link
                 href={href}
-                passHref
                 style={{
                   textDecoration: "none",
                   color: "inherit",
