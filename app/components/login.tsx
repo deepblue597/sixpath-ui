@@ -1,94 +1,133 @@
 "use client";
 
 import React, { useState } from "react";
-import { Box, Button, TextField, Card, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  TextField,
+  Card,
+  Typography,
+  Stack,
+  Link as MuiLink,
+  Alert,
+  CircularProgress,
+} from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-function Login() {
-  const [name, setName] = useState(""); // Basically 2 elements on the parameter the second the func that updates the element
+export default function Login() {
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [submitted, setSubmitted] = useState<{
-    name: string;
-    password: string;
-  } | null>(null);
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted({ name, password });
+    setError("");
+    setLoading(true);
+
+    // Simulate login delay
+    setTimeout(() => {
+      setLoading(false);
+      if (name === "" || password === "") {
+        setError("Please fill in all fields");
+      } else {
+        setSubmitted(true);
+      }
+    }, 1000);
   };
 
   return (
     <Box
       sx={{
-        height: "100vh",
+        minHeight: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        background: "linear-gradient(135deg, #eef7ff 0%, #ffffff 100%)",
+        px: 2,
       }}>
       <Card
         sx={{
           padding: 4,
-          alignContent: "center",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          // backgroundColor: "#f5f5f5",
+          borderRadius: 3,
+          boxShadow: 6,
+          width: { xs: "100%", sm: 400 },
         }}>
-        <Image src="/logo1.png" alt="SixPath Logo" width={200} height={100} />
+        {/* Logo */}
+        <Image src="/logo1.png" alt="SixPaths Logo" width={160} height={80} />
 
-        <Typography variant="h3" gutterBottom color="primary">
-          Welcome to SixPath
+        {/* Heading */}
+        <Typography variant="h4" color="primary" sx={{ mt: 2, mb: 1 }}>
+          Welcome to SixPaths
         </Typography>
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            padding: 13,
-            gap: 15,
-            alignContent: "center",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: 3, textAlign: "center" }}>
+          Visualize and manage your professional network
+        </Typography>
+
+        {/* Form */}
+        <Stack
+          component="form"
+          spacing={2}
+          sx={{ width: "100%" }}
+          onSubmit={handleSubmit}>
           <TextField
+            fullWidth
+            label="Username"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            variant="outlined"
-            label="Username"
+            autoFocus
+            autoComplete="username"
+            size="small"
           />
           <TextField
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            variant="outlined"
+            fullWidth
             label="Password"
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
+            size="small"
           />
-          <Box
-            style={{
-              marginTop: 20,
-              gap: 50,
-              display: "flex",
-            }}>
-            <Button type="submit" variant="contained" color="secondary">
-              Login
-            </Button>
-            <Link href="/register" style={{ textDecoration: "none" }}>
-              <Button variant="text" color="primary">
+
+          {error && <Alert severity="error">{error}</Alert>}
+          {submitted && <Alert severity="success">Logged in as {name}</Alert>}
+
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading}
+            sx={{ py: 1.5 }}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+          </Button>
+
+          <Link href="/register">
+            <MuiLink underline="none" sx={{ width: "100%" }}>
+              <Button
+                variant="outlined"
+                color="secondary"
+                fullWidth
+                sx={{ py: 1.5 }}>
                 Sign Up
               </Button>
-            </Link>
-          </Box>
-        </form>
-        {submitted && (
-          <Box mt={2}>
-            <Typography variant="h6">Submitted Data:</Typography>
-            <Typography>Name: {submitted.name}</Typography>
-            <Typography>Password: {submitted.password}</Typography>
-          </Box>
-        )}
+            </MuiLink>
+          </Link>
+        </Stack>
+
+        {/* Optional Footer */}
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 3 }}>
+          &copy; {new Date().getFullYear()} SixPaths. All rights reserved.
+        </Typography>
       </Card>
     </Box>
   );
 }
-
-export default Login;
