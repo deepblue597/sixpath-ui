@@ -1,11 +1,11 @@
 "use client";
 
+import UpdateInfo from "@/app/components/profile/UpdateInfo";
 import Form from "../../components/form";
 
 export default function ProfileEdit() {
   return (
-    <Form
-      mode="update"
+    <UpdateInfo
       initialData={{
         first_name: "John",
         last_name: "Doe",
