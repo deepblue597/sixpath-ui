@@ -49,13 +49,7 @@ export interface ConnectionBase {
 
 export interface ConnectionCreate extends ConnectionBase {}
 
-export interface ConnectionUpdate {
-  relationship?: string;
-  strength?: number;
-  context?: string;
-  last_interaction?: string;
-  notes?: string;
-}
+export type ConnectionUpdate = Partial<ConnectionBase>;
 
 export interface ReferralBase {
   referrer_id: number;

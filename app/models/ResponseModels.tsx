@@ -12,13 +12,13 @@ export interface ConnectionResponse {
   id: number;
   person1_id: number;
   person2_id: number;
-  relationship: string | null;
-  strength: number | null;
-  context: string | null;
-  last_interaction: Date | null;
-  notes: string | null;
+  relationship?: string;
+  strength?: number;
+  context?: string;
+  last_interaction?: Date;
+  notes?: string;
   created_at: Date;
-  updated_at: Date | null;
+  updated_at?: Date;
 }
 
 export interface ReferralResponse {

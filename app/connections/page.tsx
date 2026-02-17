@@ -4,7 +4,9 @@ import { Box, Typography } from "@mui/material";
 import ContactsTable from "../components/connections/ConnnectionsTable";
 import ConnectionStats from "../components/connections/ConnectionStats";
 import connectionData from "../../connectionData.js";
+import { useRouter } from "next/navigation";
 export default function ConnectionsPage() {
+  const router = useRouter();
   return (
     <Box
       sx={{
@@ -25,7 +27,7 @@ export default function ConnectionsPage() {
       <ConnectionStats />
       <ContactsTable
         data={connectionData}
-        onClick={(row) => console.log("Clicked row:", row)}
+        onClick={(row) => router.push(`/connections/${row.id}/edit`)}
       />
     </Box>
   );
