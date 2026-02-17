@@ -8,8 +8,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { UserBase } from "../models/InputModels";
-import { UserResponse } from "../models/ResponseModels";
+import { UserBase } from "../../models/InputModels";
+import { UserResponse } from "../../models/ResponseModels";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
