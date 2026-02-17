@@ -1,8 +1,32 @@
+"use client";
+
+import { Box, Typography } from "@mui/material";
+import ContactsTable from "../components/connections/ConnnectionsTable";
+import ConnectionStats from "../components/connections/ConnectionStats";
+import connectionData from "../../connectionData.js";
 export default function ConnectionsPage() {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Connections Page</h1>
-      <p>This is where you can manage your connections.</p>
-    </div>
+    <Box
+      sx={{
+        padding: 3,
+        gap: 2,
+        justifyContent: "center",
+        alignItems: "center",
+        display: "flex",
+        flexDirection: "column",
+      }}>
+      <Typography variant="h4" fontWeight={700}>
+        Connections
+      </Typography>
+
+      <Typography variant="body1" color="text.secondary">
+        Manage and explore your professional network
+      </Typography>
+      <ConnectionStats />
+      <ContactsTable
+        data={connectionData}
+        onClick={(row) => console.log("Clicked row:", row)}
+      />
+    </Box>
   );
 }
