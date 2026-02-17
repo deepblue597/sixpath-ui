@@ -63,11 +63,4 @@ export interface ReferralBase {
 
 export interface ReferralCreate extends ReferralBase {}
 
-export interface ReferralUpdate {
-  company?: string;
-  position?: string;
-  application_date?: string; // ISO formatted date string
-  interview_date?: string; // ISO formatted date string
-  status?: string;
-  notes?: string;
-}
+export type ReferralUpdate = Partial<ReferralBase>;

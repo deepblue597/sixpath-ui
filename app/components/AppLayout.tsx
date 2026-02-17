@@ -45,7 +45,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { text: "Profile", icon: AccountCircleIcon, href: "/profile" },
     { text: "Contacts", icon: ContactsIcon, href: "/contacts" },
     { text: "Connections", icon: GroupIcon, href: "/connections" },
-    { text: "References", icon: InboxIcon, href: "/references" },
+    { text: "Referrals", icon: InboxIcon, href: "/referrals" },
   ];
 
   const DrawerList = (

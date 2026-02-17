@@ -21,7 +21,7 @@ export interface ConnectionResponse {
   updated_at?: Date;
 }
 
-export interface ReferralResponse {
+export interface Referral {
   id: number;
   referrer_id: number;
   company: string | null;
