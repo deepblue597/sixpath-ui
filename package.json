@@ -16,6 +16,7 @@
     "@mui/material": "^7.3.7",
     "@mui/styled-engine-sc": "^7.3.7",
     "@mui/x-data-grid": "^8.27.0",
+    "@xyflow/react": "^12.10.0",
     "bootstrap": "^5.3.8",
     "next": "16.1.6",
     "react": "19.2.3",

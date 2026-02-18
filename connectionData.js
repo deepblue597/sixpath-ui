@@ -71,6 +71,28 @@ const connectionData = [
     notes: "Became friends in 2021. Regularly hang out and support each other.",
     created_at: "2023-09-20T12:00:00Z",
   },
+  {
+    id: 7,
+    person1_id: 1,
+    person2_id: 5,
+    relationship: "Former Colleague",
+    strength: 3,
+    context: "Worked at same company",
+    last_interaction: "2023-08-15",
+    notes: "Worked together at previous company. Stay in touch occasionally.",
+    created_at: "2023-08-15T12:00:00Z",
+  },
+  {
+    id: 8,
+    person1_id: 3,
+    person2_id: 5,
+    relationship: "Business Partner",
+    strength: 5,
+    context: "Co-founded startup together",
+    last_interaction: "2024-01-10",
+    notes: "Active business partnership. Weekly meetings.",
+    created_at: "2024-01-10T12:00:00Z",
+  },
 ];
 
 export default connectionData;

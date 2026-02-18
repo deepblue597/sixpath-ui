@@ -51,6 +51,19 @@ const PersonData = [
     when_i_met_them: "2018-11-05",
     notes: "Looking for collaborations in biotech.",
   },
+  {
+    id: 5,
+    first_name: "Sarah",
+    last_name: "Wilson",
+    company: "TechStart Inc",
+    sector: "Software",
+    email: "swilson@techstart.com",
+    phone: "555-777-8888",
+    linkedin_url: "https://www.linkedin.com/in/sarahwilson",
+    how_i_know_them: "Former colleague and business partner",
+    when_i_met_them: "2019-03-12",
+    notes: "Co-founded a startup together. Strong technical background.",
+  },
 ];
 
 export default PersonData;
