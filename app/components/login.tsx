@@ -14,11 +14,13 @@ import {
 } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { login } from "../lib/auth";
 
 export default function Login() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,16 +28,14 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
-
-    // Simulate login delay
-    setTimeout(() => {
+    try {
+      await login(name, password);
+      router.push("/home");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
       setLoading(false);
-      if (name === "" || password === "") {
-        setError("Please fill in all fields");
-      } else {
-        setSubmitted(true);
-      }
-    }, 1000);
+    }
   };
 
   return (
@@ -98,7 +98,6 @@ export default function Login() {
           />
 
           {error && <Alert severity="error">{error}</Alert>}
-          {submitted && <Alert severity="success">Logged in as {name}</Alert>}
 
           <Button
             type="submit"
