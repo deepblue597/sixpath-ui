@@ -1,34 +1,71 @@
 "use client";
 
-import { Box } from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import EditReferral from "@/app/components/referrals/EditReferral";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import {
+  deleteReferral,
+  getReferralById,
+  updateReferral,
+} from "@/app/lib/referrals";
+import { error } from "console";
+import { ReferralResponse, ReferralUpdate } from "@/app/lib/types";
 
 export default function EditReferralPage() {
   const router = useRouter();
+  const { id } = useParams();
+  const referralId = Number(id);
+  const [referral, setReferral] = useState<ReferralResponse | null>(null); // Replace with actual referral data fetching
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getReferralById(referralId)
+      .then((data) => setReferral(data))
+      .catch((err) => console.error("Failed to fetch referral data:", err))
+      .finally(() => setLoading(false));
+  }, [referralId]);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!referral) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <Typography variant="h6" color="error">
+          Failed to load referral data.
+        </Typography>
+      </Box>
+    );
+  }
   return (
     <Box>
       <EditReferral
-        referral={{
-          referrer_id: 1,
-          company: "Tech Corp",
-          position: "Software Engineer",
-          application_date: new Date().toISOString().split("T")[0],
-          interview_date: new Date().toISOString().split("T")[0],
-          status: "Applied",
-          notes: "Referred by John Doe",
-        }}
+        referral={referral}
         onClose={() => {
           router.push("/referrals");
           console.log("Closed");
         }}
-        onUpdate={(updated) => {
-          router.push("/referrals");
-          console.log("Updated referral:", updated);
+        onUpdate={(updatedData: Partial<ReferralUpdate>) => {
+          updateReferral(referralId, updatedData as ReferralUpdate)
+            .then(() => {
+              console.log("Referral updated successfully");
+              router.push("/referrals");
+            })
+            .catch((err) => console.error("Failed to update referral:", err));
         }}
         onDelete={() => {
-          router.push("/referrals");
-          console.log("Deleted referral");
+          deleteReferral(referralId)
+            .then(() => {
+              console.log("Referral deleted successfully");
+              router.push("/referrals");
+            })
+            .catch((err) => console.error("Failed to delete referral:", err));
         }}
       />
     </Box>

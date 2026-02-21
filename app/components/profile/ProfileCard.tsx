@@ -4,7 +4,7 @@ import Card from "@mui/material/Card";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
-import { UserResponse } from "@/app/models/ResponseModels";
+import { UserResponse, UserUpdate } from "../../lib/types";
 import { Yaldevi } from "next/font/google";
 import { Button, Chip, Divider, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -20,11 +20,14 @@ import Link from "next/link";
 interface ProfileCardProps {
   user: UserResponse;
   onClick?: (user: UserResponse) => void;
+  onEdit?: () => void;
 }
 
-export default function ProfileCard({ user, onClick }: ProfileCardProps) {
-  const router = useRouter();
-
+export default function ProfileCard({
+  user,
+  onClick,
+  onEdit,
+}: ProfileCardProps) {
   return (
     <Box
       sx={{
@@ -54,7 +57,7 @@ export default function ProfileCard({ user, onClick }: ProfileCardProps) {
           }}>
           <Button
             sx={{ position: "absolute", top: 8, right: 8 }}
-            onClick={() => router.push("/profile/edit")}>
+            onClick={onEdit}>
             <EditIcon />
           </Button>
           <AccountCircle

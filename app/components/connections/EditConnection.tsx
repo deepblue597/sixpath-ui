@@ -1,4 +1,4 @@
-import { ConnectionUpdate } from "@/app/models/InputModels";
+import { ConnectionUpdate } from "../../lib/types";
 import {
   Box,
   Grid,

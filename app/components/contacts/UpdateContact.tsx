@@ -1,6 +1,6 @@
 "use client";
 
-import { UserUpdate } from "@/app/models/InputModels";
+import { UserUpdate } from "../../lib/types";
 import {
   Box,
   Button,

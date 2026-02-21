@@ -1,6 +1,6 @@
 "use client";
 
-import { ConnectionResponse } from "@/app/models/ResponseModels";
+import { ConnectionResponse } from "../../lib/types";
 import { Paper, Typography } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
@@ -40,7 +40,7 @@ const columns: GridColDef[] = Object.keys(connectionKeyMap).map((key) => ({
   },
 }));
 
-const pagionationModel = { pageSize: 5, page: 0 };
+const pagionationModel = { pageSize: 10, page: 0 };
 
 export default function ContactsTable({ data, onClick }: ContactsTableProps) {
   return (
@@ -58,6 +58,7 @@ export default function ContactsTable({ data, onClick }: ContactsTableProps) {
         rows={data}
         columns={columns}
         initialState={{ pagination: { paginationModel: pagionationModel } }}
+        pageSizeOptions={[10, 25, 50]}
         getRowHeight={() => "auto"}
         onRowClick={
           onClick

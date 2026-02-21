@@ -4,7 +4,15 @@ import { Box, Card, Grid, Typography } from "@mui/material";
 import HubIcon from "@mui/icons-material/Hub";
 import PersonIcon from "@mui/icons-material/Person";
 
-export default function ConnectionStats() {
+interface ConnectionStatsProps {
+  totalConnections: number;
+  myConnections: number;
+}
+
+export default function ConnectionStats({
+  totalConnections,
+  myConnections,
+}: ConnectionStatsProps) {
   return (
     <Grid container spacing={2} sx={{ mb: 3 }}>
       {/* Total Connections */}
@@ -27,7 +35,7 @@ export default function ConnectionStats() {
           </Box>
 
           <Typography variant="h4" fontWeight={700}>
-            245
+            {totalConnections}
           </Typography>
         </Card>
       </Grid>
@@ -51,7 +59,7 @@ export default function ConnectionStats() {
           </Box>
 
           <Typography variant="h4" fontWeight={700}>
-            87
+            {myConnections}
           </Typography>
         </Card>
       </Grid>

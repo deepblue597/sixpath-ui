@@ -1,13 +1,13 @@
 "use client";
 
-import { Referral } from "@/app/models/ResponseModels";
+import { ReferralResponse } from "@/app/lib/types";
 import { Paper, Typography } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
 
 interface ReferralTableProps {
-  data: Referral[];
-  onClick?: (row: Referral) => void;
+  data: ReferralResponse[];
+  onClick?: (row: ReferralResponse) => void;
 }
 
 const ReferralKeyMap: { [key: string]: string } = {

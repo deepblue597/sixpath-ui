@@ -1,4 +1,4 @@
-import { ReferralUpdate } from "@/app/models/InputModels";
+import { ReferralUpdate } from "../../lib/types";
 import {
   Box,
   Grid,

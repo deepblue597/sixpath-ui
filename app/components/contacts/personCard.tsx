@@ -3,13 +3,11 @@ import {
   Card,
   CardContent,
   InputAdornment,
-  List,
   Pagination,
   TextField,
   Typography,
 } from "@mui/material";
-import { UserBase } from "../../models/InputModels";
-import { UserResponse } from "../../models/ResponseModels";
+import { UserResponse } from "../../lib/types";
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -18,8 +16,11 @@ interface PeopleListProps {
   onClick?: (person: UserResponse) => void;
 }
 
+const ROWS_PER_PAGE = 9; // 3x3 grid fits nicely
+
 export default function PeopleList({ people, onClick }: PeopleListProps) {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const filteredPeople = people.filter((person) =>
     `${person.first_name} ${person.last_name} ${person.company}`
@@ -27,26 +28,29 @@ export default function PeopleList({ people, onClick }: PeopleListProps) {
       .includes(search.toLowerCase()),
   );
 
+  // Slice the filtered results based on current page
+  const paginatedPeople = filteredPeople.slice(
+    (page - 1) * ROWS_PER_PAGE,
+    page * ROWS_PER_PAGE,
+  );
+
+  // Reset to page 1 when search changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setPage(1);
+  };
+
   return (
     <Box sx={{ p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mb: 4,
-        }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
         <TextField
           placeholder="Search people..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearchChange}
           sx={{
-            width: {
-              xs: "90%",
-              sm: "70%",
-              md: "50%",
-            },
+            width: { xs: "90%", sm: "70%", md: "50%" },
             "& .MuiOutlinedInput-root": {
-              borderRadius: "50px", // makes it pill-shaped
+              borderRadius: "50px",
             },
           }}
           slotProps={{
@@ -67,7 +71,7 @@ export default function PeopleList({ people, onClick }: PeopleListProps) {
           gap: 3,
           p: 3,
         }}>
-        {filteredPeople.map((person) => (
+        {paginatedPeople.map((person) => (
           <Card
             key={person.id}
             onClick={() => onClick?.(person)}
@@ -85,11 +89,9 @@ export default function PeopleList({ people, onClick }: PeopleListProps) {
                 <Typography variant="h6">
                   {person.first_name} {person.last_name}
                 </Typography>
-
                 <Typography variant="body2" color="text.secondary">
                   {person.company}
                 </Typography>
-
                 <Typography variant="body2" color="primary">
                   {person.email}
                 </Typography>
@@ -100,9 +102,9 @@ export default function PeopleList({ people, onClick }: PeopleListProps) {
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
         <Pagination
-          //   count={Math.ceil(total / rowsPerPage)}
-          //   page={page + 1}
-          //   onChange={(e, value) => setPage(value - 1)}
+          count={Math.ceil(filteredPeople.length / ROWS_PER_PAGE)}
+          page={page}
+          onChange={(_, value) => setPage(value)}
           color="primary"
         />
       </Box>

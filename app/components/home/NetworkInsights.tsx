@@ -57,39 +57,53 @@ function StatCard({
   );
 }
 
-export default function NetworkInsights() {
-  const insights = useMemo(() => {
-    // Total contacts
-    const totalContacts = PersonData.length;
+interface NetworkInsightsProps {
+  totalContacts: number;
+  totalConnections: number;
+  avgStrength: number;
+  topSector: string;
+  uniqueCompanies: number;
+}
 
-    // Total connections
-    const totalConnections = connectionData.length;
+export default function NetworkInsights({
+  totalContacts,
+  totalConnections,
+  avgStrength,
+  topSector,
+  uniqueCompanies,
+}: NetworkInsightsProps) {
+  // const insights = useMemo(() => {
+  //   // Total contacts
+  //   const totalContacts = PersonData.length;
 
-    // Average connection strength
-    const avgStrength =
-      connectionData.reduce((sum, conn) => sum + conn.strength, 0) /
-      connectionData.length;
+  //   // Total connections
+  //   const totalConnections = connectionData.length;
 
-    // Top sector
-    const sectorCounts: Record<string, number> = {};
-    PersonData.forEach((person) => {
-      sectorCounts[person.sector] = (sectorCounts[person.sector] || 0) + 1;
-    });
-    const topSector = Object.entries(sectorCounts).sort(
-      (a, b) => b[1] - a[1],
-    )[0];
+  //   // Average connection strength
+  //   const avgStrength =
+  //     connectionData.reduce((sum, conn) => sum + conn.strength, 0) /
+  //     connectionData.length;
 
-    // Number of companies
-    const uniqueCompanies = new Set(PersonData.map((p) => p.company)).size;
+  //   // Top sector
+  //   const sectorCounts: Record<string, number> = {};
+  //   PersonData.forEach((person) => {
+  //     sectorCounts[person.sector] = (sectorCounts[person.sector] || 0) + 1;
+  //   });
+  //   const topSector = Object.entries(sectorCounts).sort(
+  //     (a, b) => b[1] - a[1],
+  //   )[0];
 
-    return {
-      totalContacts,
-      totalConnections,
-      avgStrength: avgStrength.toFixed(1),
-      topSector: topSector ? `${topSector[0]} (${topSector[1]})` : "N/A",
-      uniqueCompanies,
-    };
-  }, []);
+  //   // Number of companies
+  //   const uniqueCompanies = new Set(PersonData.map((p) => p.company)).size;
+
+  //   return {
+  //     totalContacts,
+  //     totalConnections,
+  //     avgStrength: avgStrength.toFixed(1),
+  //     topSector: topSector ? `${topSector[0]} (${topSector[1]})` : "N/A",
+  //     uniqueCompanies,
+  //   };
+  // }, []);
 
   return (
     <Box
@@ -103,27 +117,35 @@ export default function NetworkInsights() {
       <StatCard
         icon={<PersonIcon fontSize="small" />}
         label="Total Contacts"
-        value={insights.totalContacts}
+        value={totalContacts}
         color="primary"
       />
       <StatCard
         icon={<HubIcon fontSize="small" />}
         label="Connections"
-        value={insights.totalConnections}
+        value={totalConnections}
         color="secondary"
         subtitle="links between contacts"
+      />
+
+      <StatCard
+        label="Unique Companies"
+        value={uniqueCompanies}
+        icon={<BusinessIcon fontSize="small" />}
+        color="warning"
+        subtitle="different organizations"
       />
       <StatCard
         icon={<TrendingUpIcon fontSize="small" />}
         label="Avg. Strength"
-        value={insights.avgStrength}
+        value={avgStrength}
         color="success"
         subtitle="out of 5"
       />
       <StatCard
         icon={<BusinessIcon fontSize="small" />}
         label="Top Sector"
-        value={insights.topSector}
+        value={topSector}
         color="info"
       />
     </Box>

@@ -1,6 +1,6 @@
 "use client";
 
-import { UserUpdate } from "@/app/models/InputModels";
+import { UserUpdate } from "../../lib/types";
 import {
   Box,
   Button,
@@ -19,6 +19,7 @@ import { useRouter } from "next/navigation";
 interface UpdateInfoProps {
   initialData: Partial<UserUpdate>;
   onSubmit: (data: Partial<UserUpdate>) => void;
+  onClose?: () => void;
 }
 
 const toLabel = (key: string) =>
@@ -31,13 +32,7 @@ const fieldGroups = {
 };
 
 // Outside the component to avoid re-creation on every render
-const requiredFields = [
-  "first_name",
-  "last_name",
-  "username",
-  "password",
-  "email",
-];
+const requiredFields = ["first_name", "last_name", "username", "email"];
 
 const defaultData = {
   first_name: "",
@@ -51,7 +46,11 @@ const defaultData = {
   linkedin_url: "",
 };
 
-export default function UpdateInfo({ initialData, onSubmit }: UpdateInfoProps) {
+export default function UpdateInfo({
+  initialData,
+  onSubmit,
+  onClose,
+}: UpdateInfoProps) {
   const router = useRouter();
 
   const [form, setForm] = useState(() => ({
@@ -85,7 +84,10 @@ export default function UpdateInfo({ initialData, onSubmit }: UpdateInfoProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(form);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password, ...rest } = form as typeof form & { password?: string };
+    const payload = password ? { ...rest, password } : rest;
+    onSubmit(payload);
   };
 
   return (
@@ -102,7 +104,7 @@ export default function UpdateInfo({ initialData, onSubmit }: UpdateInfoProps) {
         <Tooltip title="Back to Profile" arrow>
           <IconButton
             sx={{ position: "absolute", top: 8, right: 8 }}
-            onClick={() => router.push("/profile")}>
+            onClick={onClose}>
             <Person2Icon />
           </IconButton>
         </Tooltip>

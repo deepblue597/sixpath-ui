@@ -1,30 +1,48 @@
 "use client";
 
 import ProfileCard from "../components/profile/ProfileCard";
-
+import { Box, CircularProgress, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { UserResponse } from "../lib/types";
+import { getMe } from "../lib/users";
+import { useRouter } from "next/navigation";
 export default function ProfilePage() {
-  const userData = {
-    id: 1,
-    username: "johndoe",
-    is_me: true,
-    first_name: "John",
-    last_name: "Doe",
-    company: "Acme Corp",
-    sector: "Technology",
-    email: "sd@gmail.com",
-    phone: "123-456-7890",
-    linkedin_url: "https://linkedin.com/in/johndoe",
-    how_i_know_them: "Met at a conference",
-    when_i_met_them: "2022-01-15",
-    notes: "Great contact for future collaborations.",
-    created_at: new Date("2020-01-01"),
-  };
+  const router = useRouter();
+  const [user, setUser] = useState<UserResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getMe()
+      .then((data) => setUser(data))
+      .catch((err) => console.error("Failed to fetch user data:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (!user) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 10 }}>
+        <Typography variant="h6" color="error">
+          Failed to load user data.
+        </Typography>
+      </Box>
+    );
+  }
+
   return (
     <ProfileCard
-      user={userData}
+      user={user}
       onClick={(userData) => {
         console.log(userData);
       }}
+      onEdit={() => router.push("/profile/edit")}
     />
   );
 }
