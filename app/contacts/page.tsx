@@ -1,6 +1,6 @@
 "use client";
 
-import PersonCard from "../components/contacts/personCard";
+import PeopleList from "../components/contacts/PeopleList";
 import PersonData from "../../personsData.js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -29,9 +29,9 @@ export default function ContactsPage() {
   }
 
   return (
-    <PersonCard
+    <PeopleList
       people={people}
-      onClick={(person) => router.push(`/contacts/${person.id}/edit`)}
+      onClick={(person) => router.push(`/contacts/${person.id}`)}
     />
   );
 }

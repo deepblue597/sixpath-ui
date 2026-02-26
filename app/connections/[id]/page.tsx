@@ -1,13 +1,13 @@
 "use client";
 
-import EditConnection from "@/app/components/connections/EditConnection";
-import { getConnectionById, updateConnection } from "@/app/lib/connections";
-import { ConnectionResponse, ConnectionUpdate } from "@/app/lib/types";
+import ConnectionCard from "@/app/components/connections/ConnectiondCard";
+import { deleteConnection, getConnectionById } from "@/app/lib/connections";
+import { ConnectionResponse } from "@/app/lib/types";
 import { Box, CircularProgress, Typography } from "@mui/material";
-import { useRouter, useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export default function EditConnectionPage() {
+export default function ConnectionPage() {
   const params = useParams();
   const id = Number(params.id);
   const router = useRouter();
@@ -40,23 +40,19 @@ export default function EditConnectionPage() {
   }
 
   return (
-    <Box>
-      <EditConnection
-        connection={connection}
-        onClose={() => {
-          router.push(`/connections/${id}`);
-          console.log("Closed");
-        }}
-        onUpdate={(updatedData: Partial<ConnectionUpdate>) => {
-          console.log("Updated connection data:", updatedData);
-          updateConnection(id, updatedData as ConnectionUpdate)
-            .then(() => {
-              console.log("Connection updated successfully");
-              router.push(`/connections/${id}`);
-            })
-            .catch((err) => console.error("Failed to update connection:", err));
-        }}
-      />
+    <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <Box sx={{ width: "100%", maxWidth: 800 }}>
+        <ConnectionCard
+          connection={connection}
+          onEdit={(id) => {
+            router.push(`/connections/${id}/edit`);
+          }}
+          onDelete={async (id) => {
+            await deleteConnection(id);
+            router.push("/connections");
+          }}
+        />
+      </Box>
     </Box>
   );
 }

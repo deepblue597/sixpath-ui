@@ -55,7 +55,7 @@ export default function EditReferralPage() {
           updateReferral(referralId, updatedData as ReferralUpdate)
             .then(() => {
               console.log("Referral updated successfully");
-              router.push("/referrals");
+              router.push(`/referrals/${referralId}`);
             })
             .catch((err) => console.error("Failed to update referral:", err));
         }}
@@ -63,7 +63,7 @@ export default function EditReferralPage() {
           deleteReferral(referralId)
             .then(() => {
               console.log("Referral deleted successfully");
-              router.push("/referrals");
+              router.push(`/referrals/${referralId}`);
             })
             .catch((err) => console.error("Failed to delete referral:", err));
         }}

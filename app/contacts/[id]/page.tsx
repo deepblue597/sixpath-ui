@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import UpdateContact from "../../../components/contacts/UpdateContact";
 import { useEffect, useState } from "react";
-import { UserResponse, UserUpdate } from "@/app/lib/types";
-import { getUserById, updateUser } from "@/app/lib/users";
+import { UserResponse } from "@/app/lib/types";
+import { getUserById } from "@/app/lib/users";
 import { Box, CircularProgress, Typography } from "@mui/material";
+import PersonCard from "@/app/components/contacts/PersonCard";
 
-export default function EditContactPage() {
+export default function ContactPage() {
   const router = useRouter();
   const { id } = useParams();
   const contactId = Number(id);
@@ -40,20 +40,13 @@ export default function EditContactPage() {
   }
 
   return (
-    <UpdateContact
-      initialData={user}
-      onSubmit={(updatedData: Partial<UserUpdate>) => {
-        updateUser(contactId, updatedData as UserUpdate)
-          .then(() => {
-            console.log("Contact updated successfully");
-            router.push(`/contacts/${contactId}`);
-          })
-          .catch((err) => console.error("Failed to update contact:", err));
-      }}
-      onClose={() => {
-        router.push(`/contacts/${contactId}`);
-        console.log("Closed");
-      }}
-    />
+    <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+      <PersonCard
+        user={user}
+        onEdit={(id) => {
+          router.push(`/contacts/${id}/edit`);
+        }}
+      />
+    </Box>
   );
 }

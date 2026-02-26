@@ -8,7 +8,6 @@ import {
   Card,
   Typography,
   Stack,
-  Link as MuiLink,
   Alert,
   CircularProgress,
 } from "@mui/material";
@@ -109,17 +108,15 @@ export default function Login() {
             {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
           </Button>
 
-          <Link href="/register">
-            <MuiLink underline="none" sx={{ width: "100%" }}>
-              <Button
-                variant="outlined"
-                color="secondary"
-                fullWidth
-                sx={{ py: 1.5 }}>
-                Sign Up
-              </Button>
-            </MuiLink>
-          </Link>
+          <Button
+            component={Link}
+            href="/register"
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            sx={{ py: 1.5 }}>
+            Sign Up
+          </Button>
         </Stack>
 
         {/* Optional Footer */}

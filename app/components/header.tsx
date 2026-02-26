@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter, useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -8,8 +12,11 @@ import MenuIcon from "@mui/icons-material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import { logout } from "@/app/lib/auth";
 
 export default function HeaderBar({ onClick }: { onClick: () => void }) {
+  const router = useRouter();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -18,6 +25,18 @@ export default function HeaderBar({ onClick }: { onClick: () => void }) {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleProfile = () => {
+    router.push("/profile"); // Navigate to profile page
+    // Handle profile click (e.g., navigate to profile page)
+    handleClose();
+  };
+
+  const handleLogout = () => {
+    logout();
+    handleClose();
+    router.push("/");
   };
 
   return (
@@ -60,8 +79,8 @@ export default function HeaderBar({ onClick }: { onClick: () => void }) {
               }}
               open={Boolean(anchorEl)}
               onClose={handleClose}>
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>Logout</MenuItem>
+              <MenuItem onClick={handleProfile}>Profile</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </div>
         </Toolbar>

@@ -50,7 +50,7 @@ export default function ConnectionsPage() {
       <ConnectionStats totalConnections={totalConnections} myConnections={22} />
       <ContactsTable
         data={connections}
-        onClick={(row) => router.push(`/connections/${row.id}/edit`)}
+        onClick={(row) => router.push(`/connections/${row.id}`)}
       />
     </Box>
   );

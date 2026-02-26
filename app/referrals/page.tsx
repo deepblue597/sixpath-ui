@@ -53,7 +53,7 @@ export default function ReferralsPage() {
       />
       <RefTable
         data={referrals} // Replace with actual referral data
-        onClick={(row) => router.push(`/referrals/${row.id}/edit`)}
+        onClick={(row) => router.push(`/referrals/${row.id}`)}
       />
     </Box>
   );
