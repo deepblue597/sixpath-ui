@@ -4,7 +4,7 @@ import { Box, CircularProgress, Typography } from "@mui/material";
 import Graph from "@/app/components/home/Graph";
 import NetworkInsights from "@/app/components/home/NetworkInsights";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ConnectionResponse, UserResponse } from "../lib/types";
 import { getAllUsers, getMe } from "../lib/users";
 import { getAllConnections } from "../lib/connections";
@@ -19,6 +19,27 @@ export default function HomePage() {
 
   const totalContacts = peopleData.length;
   const totalConnections = connectionData.length;
+
+  const avgStrength = useMemo(() => {
+    const withStrength = connectionData.filter((c) => c.strength != null);
+    if (!withStrength.length) return 0;
+    const sum = withStrength.reduce((acc, c) => acc + (c.strength ?? 0), 0);
+    return parseFloat((sum / withStrength.length).toFixed(1));
+  }, [connectionData]);
+
+  const uniqueCompanies = useMemo(
+    () => new Set(peopleData.map((p) => p.company).filter(Boolean)).size,
+    [peopleData],
+  );
+
+  const topSector = useMemo(() => {
+    const counts: Record<string, number> = {};
+    peopleData.forEach((p) => {
+      if (p.sector) counts[p.sector] = (counts[p.sector] ?? 0) + 1;
+    });
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    return sorted.length ? sorted[0][0] : "N/A";
+  }, [peopleData]);
 
   useEffect(() => {
     Promise.all([getAllUsers({ limit: 1000 }), getAllConnections(), getMe()])
@@ -55,9 +76,9 @@ export default function HomePage() {
       <NetworkInsights
         totalConnections={totalConnections}
         totalContacts={totalContacts}
-        avgStrength={3.5}
-        uniqueCompanies={12}
-        topSector="Technology"
+        avgStrength={avgStrength}
+        uniqueCompanies={uniqueCompanies}
+        topSector={topSector}
       />
 
       {/* Graph Container */}
