@@ -5,9 +5,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import HubIcon from "@mui/icons-material/Hub";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import BusinessIcon from "@mui/icons-material/Business";
-import PersonData from "@/personsData";
-import connectionData from "@/connectionData";
-import { useMemo } from "react";
 
 interface StatCardProps {
   icon: React.ReactNode;
@@ -63,6 +60,7 @@ interface NetworkInsightsProps {
   avgStrength: number;
   topSector: string;
   uniqueCompanies: number;
+  uniqueSectors: number;
 }
 
 export default function NetworkInsights({
@@ -71,40 +69,8 @@ export default function NetworkInsights({
   avgStrength,
   topSector,
   uniqueCompanies,
+  uniqueSectors,
 }: NetworkInsightsProps) {
-  // const insights = useMemo(() => {
-  //   // Total contacts
-  //   const totalContacts = PersonData.length;
-
-  //   // Total connections
-  //   const totalConnections = connectionData.length;
-
-  //   // Average connection strength
-  //   const avgStrength =
-  //     connectionData.reduce((sum, conn) => sum + conn.strength, 0) /
-  //     connectionData.length;
-
-  //   // Top sector
-  //   const sectorCounts: Record<string, number> = {};
-  //   PersonData.forEach((person) => {
-  //     sectorCounts[person.sector] = (sectorCounts[person.sector] || 0) + 1;
-  //   });
-  //   const topSector = Object.entries(sectorCounts).sort(
-  //     (a, b) => b[1] - a[1],
-  //   )[0];
-
-  //   // Number of companies
-  //   const uniqueCompanies = new Set(PersonData.map((p) => p.company)).size;
-
-  //   return {
-  //     totalContacts,
-  //     totalConnections,
-  //     avgStrength: avgStrength.toFixed(1),
-  //     topSector: topSector ? `${topSector[0]} (${topSector[1]})` : "N/A",
-  //     uniqueCompanies,
-  //   };
-  // }, []);
-
   return (
     <Box
       sx={{
@@ -146,6 +112,13 @@ export default function NetworkInsights({
         icon={<BusinessIcon fontSize="small" />}
         label="Top Sector"
         value={topSector}
+        color="info"
+      />
+
+      <StatCard
+        icon={<BusinessIcon fontSize="small" />}
+        label="Unique Sector"
+        value={uniqueSectors}
         color="info"
       />
     </Box>

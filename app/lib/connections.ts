@@ -3,6 +3,7 @@ import type {
   ConnectionResponse,
   ConnectionCreate,
   ConnectionUpdate,
+  ConnectionNameResponse,
 } from "./types";
 
 export async function getAllConnections(): Promise<ConnectionResponse[]> {
@@ -53,4 +54,18 @@ export async function deleteConnection(connectionId: number): Promise<void> {
   });
 
   if (error) throw new Error(JSON.stringify(error));
+}
+
+export async function get_first_last_name_by_connection_id(
+  connectionId: number,
+): Promise<ConnectionNameResponse> {
+  const { data, error } = await client.GET(
+    "/connections/first-last-name/{connection_id}",
+    {
+      params: { path: { connection_id: connectionId } },
+    },
+  );
+
+  if (error) throw new Error(JSON.stringify(error));
+  return data;
 }

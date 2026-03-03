@@ -7,24 +7,39 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import ContactsTable from "../components/connections/ConnnectionsTable";
+import ConnectionsTable, {
+  ConnectionDisplayRow,
+} from "../components/connections/ConnnectionsTable";
 import ConnectionStats from "../components/connections/ConnectionStats";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getAllConnections } from "../lib/connections";
-import { ConnectionResponse } from "../lib/types";
+import {
+  getAllConnections,
+  get_first_last_name_by_connection_id,
+} from "../lib/connections";
 import AddIcon from "@mui/icons-material/Add";
 export default function ConnectionsPage() {
   const router = useRouter();
-  const [connections, setConnections] = useState<ConnectionResponse[]>([]);
+  const [connections, setConnections] = useState<ConnectionDisplayRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   const totalConnections = connections.length;
-  //const myConnections = connections.filter((conn) => conn.is_mutual).length;
 
   useEffect(() => {
     getAllConnections()
-      .then((data) => setConnections(data))
+      .then(async (data) => {
+        const enriched = await Promise.all(
+          data.map(async (conn) => {
+            try {
+              const names = await get_first_last_name_by_connection_id(conn.id);
+              return { ...conn, ...names };
+            } catch {
+              return conn;
+            }
+          }),
+        );
+        setConnections(enriched);
+      })
       .catch((err) => console.error("Failed to fetch connections:", err))
       .finally(() => setLoading(false));
   }, []);
@@ -70,7 +85,7 @@ export default function ConnectionsPage() {
         </Button>
       </Box>
       <ConnectionStats totalConnections={totalConnections} myConnections={22} />
-      <ContactsTable
+      <ConnectionsTable
         data={connections}
         onClick={(row) => router.push(`/connections/${row.id}`)}
       />

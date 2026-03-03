@@ -5,15 +5,20 @@ import { Paper, Typography } from "@mui/material";
 import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
 
+export type ConnectionDisplayRow = ConnectionResponse & {
+  user1_full_name?: string;
+  user2_full_name?: string;
+};
+
 interface ContactsTableProps {
-  data: ConnectionResponse[];
-  onClick?: (row: ConnectionResponse) => void;
+  data: ConnectionDisplayRow[];
+  onClick?: (row: ConnectionDisplayRow) => void;
 }
 
 const connectionKeyMap: { [key: string]: string } = {
   id: "ID",
-  person1_id: "Person 1 ID",
-  person2_id: "Person 2 ID",
+  user1_full_name: "Person 1",
+  user2_full_name: "Person 2",
   relationship: "Relationship",
   strength: "Strength",
   context: "Context",
@@ -42,7 +47,10 @@ const columns: GridColDef[] = Object.keys(connectionKeyMap).map((key) => ({
 
 const pagionationModel = { pageSize: 10, page: 0 };
 
-export default function ContactsTable({ data, onClick }: ContactsTableProps) {
+export default function ConnectionsTable({
+  data,
+  onClick,
+}: ContactsTableProps) {
   return (
     <Paper
       elevation={3}

@@ -1,8 +1,12 @@
 "use client";
 
 import ConnectionCard from "@/app/components/connections/ConnectiondCard";
-import { deleteConnection, getConnectionById } from "@/app/lib/connections";
-import { ConnectionResponse } from "@/app/lib/types";
+import {
+  deleteConnection,
+  getConnectionById,
+  get_first_last_name_by_connection_id,
+} from "@/app/lib/connections";
+import { ConnectionNameResponse, ConnectionResponse } from "@/app/lib/types";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -13,10 +17,19 @@ export default function ConnectionPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [connection, setConnection] = useState<ConnectionResponse | null>(null);
+  const [names, setNames] = useState<ConnectionNameResponse | undefined>(
+    undefined,
+  );
 
   useEffect(() => {
-    getConnectionById(id)
-      .then((data) => setConnection(data))
+    Promise.all([
+      getConnectionById(id),
+      get_first_last_name_by_connection_id(id),
+    ])
+      .then(([connData, namesData]) => {
+        setConnection(connData);
+        setNames(namesData);
+      })
       .catch((err) => console.error("Failed to fetch connection data:", err))
       .finally(() => setLoading(false));
   }, [id]);
@@ -44,6 +57,7 @@ export default function ConnectionPage() {
       <Box sx={{ width: "100%", maxWidth: 800 }}>
         <ConnectionCard
           connection={connection}
+          names={names}
           onEdit={(id) => {
             router.push(`/connections/${id}/edit`);
           }}

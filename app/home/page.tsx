@@ -6,7 +6,7 @@ import NetworkInsights from "@/app/components/home/NetworkInsights";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ConnectionResponse, UserResponse } from "../lib/types";
-import { getAllUsers, getMe } from "../lib/users";
+import { getAllUsers, getMe, getUserFilterOptions } from "../lib/users";
 import { getAllConnections } from "../lib/connections";
 export default function HomePage() {
   const router = useRouter();
@@ -16,6 +16,8 @@ export default function HomePage() {
   );
   const [currentUser, setCurrentUser] = useState<UserResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uniqueCompanies, setUniqueCompanies] = useState(0);
+  const [uniqueSectors, setUniqueSectors] = useState(0);
 
   const totalContacts = peopleData.length;
   const totalConnections = connectionData.length;
@@ -27,10 +29,10 @@ export default function HomePage() {
     return parseFloat((sum / withStrength.length).toFixed(1));
   }, [connectionData]);
 
-  const uniqueCompanies = useMemo(
-    () => new Set(peopleData.map((p) => p.company).filter(Boolean)).size,
-    [peopleData],
-  );
+  // const uniqueCompanies = useMemo(
+  //   () => new Set(peopleData.map((p) => p.company).filter(Boolean)).size,
+  //   [peopleData],
+  // );
 
   const topSector = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -42,11 +44,18 @@ export default function HomePage() {
   }, [peopleData]);
 
   useEffect(() => {
-    Promise.all([getAllUsers({ limit: 1000 }), getAllConnections(), getMe()])
-      .then(([users, connections, me]) => {
+    Promise.all([
+      getAllUsers({ limit: 1000 }),
+      getAllConnections(),
+      getMe(),
+      getUserFilterOptions(),
+    ])
+      .then(([users, connections, me, stats]) => {
         setPeopleData(users);
         setConnectionData(connections);
         setCurrentUser(me);
+        setUniqueCompanies(stats.company.length);
+        setUniqueSectors(stats.sector.length);
       })
       .catch((err) => console.error("Failed to fetch data:", err))
       .finally(() => setLoading(false));
@@ -79,6 +88,7 @@ export default function HomePage() {
         avgStrength={avgStrength}
         uniqueCompanies={uniqueCompanies}
         topSector={topSector}
+        uniqueSectors={uniqueSectors}
       />
 
       {/* Graph Container */}

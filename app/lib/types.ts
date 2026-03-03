@@ -15,3 +15,5 @@ export type ReferralResponse = components["schemas"]["ReferralResponse"];
 export type ReferralCreate = components["schemas"]["ReferralCreate"];
 export type ReferralUpdate = components["schemas"]["ReferralUpdate"];
 export type Token = components["schemas"]["Token"];
+export type ConnectionNameResponse =
+  components["schemas"]["ConnectionNameResponse"];

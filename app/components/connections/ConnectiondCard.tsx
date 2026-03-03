@@ -20,17 +20,19 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import PersonIcon from "@mui/icons-material/Person";
-import { ConnectionResponse } from "@/app/lib/types";
+import { ConnectionNameResponse, ConnectionResponse } from "@/app/lib/types";
 import { useState } from "react";
 
 interface ConnectionCardProps {
   connection: ConnectionResponse;
+  names?: ConnectionNameResponse;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
 }
 
 export default function ConnectionCard({
   connection,
+  names,
   onEdit,
   onDelete,
 }: ConnectionCardProps) {
@@ -112,22 +114,22 @@ export default function ConnectionCard({
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <PersonIcon fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
-                    Person 1 ID
+                    Person 1
                   </Typography>
                 </Box>
                 <Typography variant="body1" fontWeight="medium">
-                  {connection.person1_id}
+                  {names?.user1_full_name ?? `ID: ${connection.person1_id}`}
                 </Typography>
               </Grid>
               <Grid>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <PersonIcon fontSize="small" color="action" />
                   <Typography variant="body2" color="text.secondary">
-                    Person 2 ID
+                    Person 2
                   </Typography>
                 </Box>
                 <Typography variant="body1" fontWeight="medium">
-                  {connection.person2_id}
+                  {names?.user2_full_name ?? `ID: ${connection.person2_id}`}
                 </Typography>
               </Grid>
             </Grid>

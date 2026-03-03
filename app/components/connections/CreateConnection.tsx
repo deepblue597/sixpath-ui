@@ -1,6 +1,7 @@
 "use client";
 
 import { ConnectionCreate } from "../../lib/types";
+import { getUserById } from "../../lib/users";
 import {
   Box,
   Button,
@@ -10,6 +11,7 @@ import {
   Typography,
   Divider,
   Stack,
+  FormHelperText,
 } from "@mui/material";
 import React from "react";
 import NumberField from "../NumberField";
@@ -44,6 +46,56 @@ export default function CreateConnection({
   onClose,
 }: CreateConnectionProps) {
   const [formData, setFormData] = React.useState<ConnectionCreate>(defaultData);
+  const [person1Name, setPerson1Name] = React.useState<string | null>(null);
+  const [person2Name, setPerson2Name] = React.useState<string | null>(null);
+
+  // Live name lookup for person1_id
+  React.useEffect(() => {
+    const id = formData.person1_id;
+    if (!id) {
+      setPerson1Name(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      getUserById(id)
+        .then((user) => {
+          if (!cancelled)
+            setPerson1Name(`${user.first_name} ${user.last_name}`);
+        })
+        .catch(() => {
+          if (!cancelled) setPerson1Name("User not found");
+        });
+    }, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [formData.person1_id]);
+
+  // Live name lookup for person2_id
+  React.useEffect(() => {
+    const id = formData.person2_id;
+    if (!id) {
+      setPerson2Name(null);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      getUserById(id)
+        .then((user) => {
+          if (!cancelled)
+            setPerson2Name(`${user.first_name} ${user.last_name}`);
+        })
+        .catch(() => {
+          if (!cancelled) setPerson2Name("User not found");
+        });
+    }, 500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [formData.person2_id]);
 
   const handleChange = (
     key: keyof ConnectionCreate,
@@ -77,14 +129,20 @@ export default function CreateConnection({
 
     let input;
     if (isIdField) {
+      const namePrev = key === "person1_id" ? person1Name : person2Name;
       input = (
-        <NumberField
-          label={label}
-          value={typeof value === "number" ? value : undefined}
-          onValueChange={(val) =>
-            handleChange(key as keyof ConnectionCreate, val)
-          }
-        />
+        <Box>
+          <NumberField
+            label={label}
+            value={typeof value === "number" ? value : undefined}
+            onValueChange={(val) =>
+              handleChange(key as keyof ConnectionCreate, val)
+            }
+          />
+          {namePrev && (
+            <FormHelperText sx={{ ml: 1 }}>{namePrev}</FormHelperText>
+          )}
+        </Box>
       );
     } else if (key === "strength") {
       input = (

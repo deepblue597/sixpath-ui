@@ -1,4 +1,4 @@
-import { ConnectionUpdate } from "../../lib/types";
+import { ConnectionNameResponse, ConnectionUpdate } from "../../lib/types";
 import {
   Box,
   Grid,
@@ -17,6 +17,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 interface EditConnectionProps {
   connection: ConnectionUpdate;
+  names?: ConnectionNameResponse;
   onClose: () => void;
   onUpdate: (updated: ConnectionUpdate) => void;
 }
@@ -41,6 +42,7 @@ const connectionKeyMap: Record<string, string> = {
 
 export default function EditConnection({
   connection,
+  names,
   onClose,
   onUpdate,
 }: EditConnectionProps) {
@@ -67,12 +69,17 @@ export default function EditConnection({
     const isFullWidth = isMultilineField || key === "last_interaction";
     let input;
     if (isIdField) {
+      const displayValue =
+        key === "person1_id"
+          ? (names?.user1_full_name ?? String(value))
+          : (names?.user2_full_name ?? String(value));
+      const displayLabel = key === "person1_id" ? "Person 1" : "Person 2";
       input = (
         <TextField
           fullWidth
           size="small"
-          label={label}
-          value={String(value)}
+          label={displayLabel}
+          value={displayValue}
           disabled
         />
       );

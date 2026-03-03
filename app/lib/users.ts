@@ -70,3 +70,29 @@ export async function createUser(payload: UserCreate): Promise<UserResponse> {
   if (error) throw new Error(JSON.stringify(error));
   return data;
 }
+
+/**
+ * DELETE /users/{user_id}
+ * Deletes a user by ID.
+ */
+export async function deleteUser(userId: number): Promise<void> {
+  const { error } = await client.DELETE("/users/{user_id}", {
+    params: { path: { user_id: userId } },
+  });
+
+  if (error) throw new Error(JSON.stringify(error));
+}
+
+/**
+ * GET /users/filter-options
+ */
+
+export async function getUserFilterOptions(): Promise<{
+  company: string[];
+  sector: string[];
+}> {
+  const { data, error } = await client.GET("/users/filter-options");
+
+  if (error) throw new Error(JSON.stringify(error));
+  return data;
+}
