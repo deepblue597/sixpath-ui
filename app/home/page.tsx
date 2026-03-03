@@ -21,7 +21,7 @@ export default function HomePage() {
   const totalConnections = connectionData.length;
 
   useEffect(() => {
-    Promise.all([getAllUsers(), getAllConnections(), getMe()])
+    Promise.all([getAllUsers({ limit: 1000 }), getAllConnections(), getMe()])
       .then(([users, connections, me]) => {
         setPeopleData(users);
         setConnectionData(connections);

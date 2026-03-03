@@ -1,11 +1,18 @@
 "use client";
-import { Box, Card, CircularProgress, Grid, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import RefStats from "@/app/components/referrals/RefStats";
 import { useRouter } from "next/navigation";
 import RefTable from "../components/referrals/RefTable";
 import { useEffect, useState } from "react";
 import { ReferralResponse } from "../lib/types";
 import { getAllReferrals } from "../lib/referrals";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function ReferralsPage() {
   const router = useRouter();
@@ -40,13 +47,28 @@ export default function ReferralsPage() {
         display: "flex",
         flexDirection: "column",
       }}>
-      <Typography variant="h4" fontWeight={700}>
-        Referrals
-      </Typography>
-
-      <Typography variant="body1" color="text.secondary">
-        Manage and explore your referrals
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}>
+        <Stack spacing={0.5}>
+          <Typography variant="h4" fontWeight={700}>
+            Referrals
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Manage and explore your referrals
+          </Typography>
+        </Stack>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => router.push("/referrals/create")}>
+          New Referral
+        </Button>
+      </Box>
       <RefStats
         totalReferrals={totalReferrals}
         totalReferrers={totalReferrers}

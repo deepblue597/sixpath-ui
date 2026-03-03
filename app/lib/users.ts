@@ -1,12 +1,17 @@
 import { client } from "./apiClient";
-import type { UserResponse, UserUpdate } from "./types";
+import type { UserResponse, UserUpdate, UserCreate } from "./types";
 
 /**
  * GET /users/
  * Returns all contacts/connections of the authenticated user.
  */
-export async function getAllUsers(): Promise<UserResponse[]> {
-  const { data, error } = await client.GET("/users/");
+export async function getAllUsers(params?: {
+  offset?: number;
+  limit?: number;
+}): Promise<UserResponse[]> {
+  const { data, error } = await client.GET("/users/", {
+    params: { query: params },
+  });
 
   if (error) throw new Error(JSON.stringify(error));
   return data;
@@ -46,6 +51,19 @@ export async function updateUser(
 ): Promise<UserResponse> {
   const { data, error } = await client.PUT("/users/{user_id}", {
     params: { path: { user_id: userId } },
+    body: payload,
+  });
+
+  if (error) throw new Error(JSON.stringify(error));
+  return data;
+}
+
+/**
+ * POST /users/
+ * Creates a new contact/connection in the network.
+ */
+export async function createUser(payload: UserCreate): Promise<UserResponse> {
+  const { data, error } = await client.POST("/users/", {
     body: payload,
   });
 

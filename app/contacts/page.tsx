@@ -1,12 +1,18 @@
 "use client";
 
 import PeopleList from "../components/contacts/PeopleList";
-import PersonData from "../../personsData.js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserResponse } from "../lib/types";
 import { getAllUsers } from "../lib/users";
-import { Box, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 export default function ContactsPage() {
   const router = useRouter();
@@ -14,7 +20,8 @@ export default function ContactsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getAllUsers()
+    // Fetch all contacts — client-side search & pagination handles the rest
+    getAllUsers({ limit: 1000 })
       .then((users) => setPeople(users))
       .catch((err) => console.error("Failed to fetch users:", err))
       .finally(() => setLoading(false));
@@ -29,9 +36,34 @@ export default function ContactsPage() {
   }
 
   return (
-    <PeopleList
-      people={people}
-      onClick={(person) => router.push(`/contacts/${person.id}`)}
-    />
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          px: 3,
+          pt: 3,
+        }}>
+        <Stack spacing={0.5}>
+          <Typography variant="h4" fontWeight={700}>
+            Contacts
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Browse and manage people in your network
+          </Typography>
+        </Stack>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => router.push("/contacts/create")}>
+          New Contact
+        </Button>
+      </Box>
+      <PeopleList
+        people={people}
+        onClick={(person) => router.push(`/contacts/${person.id}`)}
+      />
+    </Box>
   );
 }

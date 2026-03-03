@@ -1,12 +1,19 @@
 "use client";
 
-import { Box, CircularProgress, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Stack,
+  Typography,
+} from "@mui/material";
 import ContactsTable from "../components/connections/ConnnectionsTable";
 import ConnectionStats from "../components/connections/ConnectionStats";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getAllConnections } from "../lib/connections";
 import { ConnectionResponse } from "../lib/types";
+import AddIcon from "@mui/icons-material/Add";
 export default function ConnectionsPage() {
   const router = useRouter();
   const [connections, setConnections] = useState<ConnectionResponse[]>([]);
@@ -40,13 +47,28 @@ export default function ConnectionsPage() {
         display: "flex",
         flexDirection: "column",
       }}>
-      <Typography variant="h4" fontWeight={700}>
-        Connections
-      </Typography>
-
-      <Typography variant="body1" color="text.secondary">
-        Manage and explore your professional network
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}>
+        <Stack spacing={0.5}>
+          <Typography variant="h4" fontWeight={700}>
+            Connections
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            Manage and explore your professional network
+          </Typography>
+        </Stack>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => router.push("/connections/create")}>
+          New Connection
+        </Button>
+      </Box>
       <ConnectionStats totalConnections={totalConnections} myConnections={22} />
       <ContactsTable
         data={connections}
