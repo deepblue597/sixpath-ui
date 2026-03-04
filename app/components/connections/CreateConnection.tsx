@@ -136,7 +136,7 @@ export default function CreateConnection({
             label={label}
             value={typeof value === "number" ? value : undefined}
             onValueChange={(val) =>
-              handleChange(key as keyof ConnectionCreate, val)
+              handleChange(key as keyof ConnectionCreate, val ?? undefined)
             }
           />
           {namePrev && (
@@ -151,7 +151,7 @@ export default function CreateConnection({
           max={5}
           label={label}
           value={typeof value === "number" ? value : undefined}
-          onValueChange={(val) => handleChange("strength", val)}
+          onValueChange={(val) => handleChange("strength", val ?? undefined)}
         />
       );
     } else if (key === "last_interaction") {
@@ -181,7 +181,7 @@ export default function CreateConnection({
     }
 
     return (
-      <Grid key={key} item xs={12} sm={isMultilineField ? 12 : 6}>
+      <Grid key={key} size={{ xs: 12, sm: isMultilineField ? 12 : 6 }}>
         {input}
       </Grid>
     );

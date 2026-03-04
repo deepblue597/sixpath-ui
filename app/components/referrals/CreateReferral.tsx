@@ -79,7 +79,7 @@ export default function CreateReferral({
         <NumberField
           label={label}
           value={typeof value === "number" ? value : undefined}
-          onValueChange={(val) => handleChange("referrer_id", val)}
+          onValueChange={(val) => handleChange("referrer_id", val ?? undefined)}
         />
       );
     } else if (isDate) {
@@ -109,7 +109,7 @@ export default function CreateReferral({
     }
 
     return (
-      <Grid key={key} item xs={12} sm={isMultilineField ? 12 : 6}>
+      <Grid key={key} size={{ xs: 12, sm: isMultilineField ? 12 : 6 }}>
         {input}
       </Grid>
     );

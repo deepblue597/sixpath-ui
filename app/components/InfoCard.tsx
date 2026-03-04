@@ -3,11 +3,8 @@ import LinkIcon from "@mui/icons-material/Link";
 import BookIcon from "@mui/icons-material/Book";
 import InfoIcon from "@mui/icons-material/Info";
 import { Card, CardContent, Typography, SvgIconProps } from "@mui/material";
-import {
-  ConnectionResponse,
-  UserResponse,
-  ReferralResponse,
-} from "../models/ResponseModels";
+import { ConnectionResponse, UserResponse } from "../models/ResponseModels";
+import { ReferralResponse } from "../lib/types";
 
 type CardMode = "person" | "connection" | "referral";
 

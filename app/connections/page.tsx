@@ -22,6 +22,7 @@ export default function ConnectionsPage() {
   const router = useRouter();
   const [connections, setConnections] = useState<ConnectionDisplayRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [numConnections, setNumConnections] = useState(0);
 
   const totalConnections = connections.length;
 
@@ -39,6 +40,7 @@ export default function ConnectionsPage() {
           }),
         );
         setConnections(enriched);
+        setNumConnections(enriched.length);
       })
       .catch((err) => console.error("Failed to fetch connections:", err))
       .finally(() => setLoading(false));
@@ -84,7 +86,10 @@ export default function ConnectionsPage() {
           New Connection
         </Button>
       </Box>
-      <ConnectionStats totalConnections={totalConnections} myConnections={22} />
+      <ConnectionStats
+        totalConnections={totalConnections}
+        myConnections={numConnections}
+      />
       <ConnectionsTable
         data={connections}
         onClick={(row) => router.push(`/connections/${row.id}`)}

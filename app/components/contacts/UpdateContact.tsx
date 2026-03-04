@@ -110,7 +110,7 @@ export default function UpdateContact({
       );
     }
     return (
-      <Grid key={key} item xs={12} sm={6}>
+      <Grid key={key} size={{ xs: 12, sm: 6 }}>
         {input}
       </Grid>
     );

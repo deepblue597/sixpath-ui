@@ -3,7 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserResponse } from "@/app/lib/types";
-import { getUserById } from "@/app/lib/users";
+import { getUserById, deleteUser } from "@/app/lib/users";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import PersonCard from "@/app/components/contacts/PersonCard";
 
@@ -45,6 +45,10 @@ export default function ContactPage() {
         user={user}
         onEdit={(id) => {
           router.push(`/contacts/${id}/edit`);
+        }}
+        onDelete={async (id) => {
+          await deleteUser(id);
+          router.push("/contacts");
         }}
       />
     </Box>

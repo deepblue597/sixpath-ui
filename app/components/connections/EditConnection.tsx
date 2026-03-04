@@ -64,33 +64,17 @@ export default function EditConnection({
   const renderField = (key: keyof ConnectionUpdate) => {
     const label = connectionKeyMap[key] || key;
     const value = formData[key] ?? "";
-    const isIdField = key === "person1_id" || key === "person2_id";
     const isMultilineField = key === "context" || key === "notes";
     const isFullWidth = isMultilineField || key === "last_interaction";
     let input;
-    if (isIdField) {
-      const displayValue =
-        key === "person1_id"
-          ? (names?.user1_full_name ?? String(value))
-          : (names?.user2_full_name ?? String(value));
-      const displayLabel = key === "person1_id" ? "Person 1" : "Person 2";
-      input = (
-        <TextField
-          fullWidth
-          size="small"
-          label={displayLabel}
-          value={displayValue}
-          disabled
-        />
-      );
-    } else if (key === "strength") {
+    if (key === "strength") {
       input = (
         <NumberField
           min={0}
           max={5}
           label={label}
           value={typeof value === "number" ? value : undefined}
-          onValueChange={(val) => handleChange("strength", val)}
+          onValueChange={(val) => handleChange("strength", val ?? undefined)}
         />
       );
     } else if (key === "last_interaction") {

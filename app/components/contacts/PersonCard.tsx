@@ -4,6 +4,11 @@ import {
   Button,
   Card,
   Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Divider,
   Link,
   Stack,
@@ -16,17 +21,25 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import NoteIcon from "@mui/icons-material/Note";
 import { AccountCircle } from "@mui/icons-material";
+import { useState } from "react";
 
 interface PersonCardProps {
   user: UserResponse;
   onEdit: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
-export default function PersonCard({ user, onEdit }: PersonCardProps) {
+export default function PersonCard({
+  user,
+  onEdit,
+  onDelete,
+}: PersonCardProps) {
+  const [confirmOpen, setConfirmOpen] = useState(false);
   return (
     <Box
       sx={{
@@ -58,6 +71,12 @@ export default function PersonCard({ user, onEdit }: PersonCardProps) {
             sx={{ position: "absolute", top: 8, right: 8 }}
             onClick={() => onEdit(user.id)}>
             <EditIcon />
+          </Button>
+          <Button
+            color="error"
+            sx={{ position: "absolute", top: 8, right: 56 }}
+            onClick={() => setConfirmOpen(true)}>
+            <DeleteIcon />
           </Button>
           <AccountCircle
             color="primary"
@@ -244,6 +263,31 @@ export default function PersonCard({ user, onEdit }: PersonCardProps) {
           </>
         )}
       </Card>
+
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>Delete contact?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete{" "}
+            <strong>
+              {user.first_name} {user.last_name}
+            </strong>
+            ? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => {
+              setConfirmOpen(false);
+              onDelete(user.id);
+            }}>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

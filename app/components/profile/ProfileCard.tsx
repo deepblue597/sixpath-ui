@@ -15,7 +15,7 @@ import ContactsIcon from "@mui/icons-material/Contacts";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import Link from "next/link";
+import Link from "@mui/material/Link";
 
 interface ProfileCardProps {
   user: UserResponse;

@@ -17,7 +17,6 @@ import {
   DialogActions,
 } from "@mui/material";
 import React from "react";
-import NumberField from "../NumberField";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -29,7 +28,6 @@ interface EditReferralProps {
 }
 
 const defaultData: ReferralUpdate = {
-  referrer_id: undefined,
   company: "",
   position: "",
   application_date: "",
@@ -39,7 +37,6 @@ const defaultData: ReferralUpdate = {
 };
 
 const referralKeyMap: Record<string, string> = {
-  referrer_id: "Referrer ID",
   company: "Company",
   position: "Position",
   application_date: "Application Date",
@@ -87,22 +84,12 @@ export default function EditReferral({
   const renderField = (key: keyof ReferralUpdate) => {
     const label = referralKeyMap[key] || key;
     const value = formData[key] ?? "";
-    const isIdField = key === "referrer_id";
     const isMultilineField = key === "notes";
 
     const isDate = key === "application_date" || key === "interview_date";
 
     let input;
-    if (isIdField) {
-      input = (
-        <NumberField
-          size="small"
-          label={label}
-          value={value as number | undefined}
-          disabled
-        />
-      );
-    } else if (isDate) {
+    if (isDate) {
       input = (
         <TextField
           fullWidth

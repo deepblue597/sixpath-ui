@@ -754,9 +754,10 @@ function GraphInner({
         <Controls position="bottom-right" />
         <MiniMap
           nodeStrokeWidth={2}
-          nodeColor={(n) => {
+          nodeColor={(n): string => {
             if (n.type === "userNode") return "#4F46E5";
-            if (n.type === "clusterNode") return n.data?.color ?? "#6366f1";
+            if (n.type === "clusterNode")
+              return (n.data?.color as string) ?? "#6366f1";
             return n.data?.faded ? "#f1f5f9" : "#94a3b8";
           }}
           style={{ borderRadius: 8 }}

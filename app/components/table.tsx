@@ -3,7 +3,8 @@ import Paper from "@mui/material/Paper";
 import { TextField, Typography } from "@mui/material";
 import { Fragment } from "react/jsx-runtime";
 import { Ref, useState } from "react";
-import { ReferralResponse, ConnectionResponse } from "../models/ResponseModels";
+import { ConnectionResponse } from "../models/ResponseModels";
+import { ReferralResponse } from "../lib/types";
 import { AlignHorizontalCenter } from "@mui/icons-material";
 
 interface TableProps {

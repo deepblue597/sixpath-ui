@@ -67,7 +67,7 @@ export default function UpdateInfo({
 
   const renderFields = (fields: string[]) =>
     fields.map((key) => (
-      <Grid key={key} item xs={12} sm={6}>
+      <Grid key={key} size={{ xs: 12, sm: 6 }}>
         <TextField
           fullWidth
           size="small"
@@ -76,7 +76,7 @@ export default function UpdateInfo({
           type={
             key === "password" ? "password" : key === "email" ? "email" : "text"
           }
-          value={form[key] || ""}
+          value={form[key as keyof typeof form] || ""}
           onChange={(e) => handleInputChange(key, e.target.value)}
         />
       </Grid>
