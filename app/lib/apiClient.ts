@@ -2,6 +2,12 @@ import createClient from "openapi-fetch";
 import type { paths } from "./api.d.ts";
 
 /**
+ * Guard so only the first 401 triggers a redirect,
+ * avoiding cascading aborts when multiple requests fail at once.
+ */
+let isRedirecting = false;
+
+/**
  * A single shared openapi-fetch client.
  * - Reads the base URL from the environment variable.
  * - Automatically attaches the JWT Bearer token from localStorage on every request.
@@ -19,7 +25,8 @@ export const client = createClient<paths>({
 
     const response = await fetch(request);
 
-    if (response.status === 401 && typeof window !== "undefined") {
+    if (response.status === 401 && typeof window !== "undefined" && !isRedirecting) {
+      isRedirecting = true;
       localStorage.removeItem("token");
       window.location.href = "/";
     }

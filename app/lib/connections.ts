@@ -56,6 +56,17 @@ export async function deleteConnection(connectionId: number): Promise<void> {
   if (error) throw new Error(JSON.stringify(error));
 }
 
+export async function getConnectionsByUserId(
+  userId: number,
+): Promise<ConnectionResponse[]> {
+  const { data, error } = await client.GET("/connections/user/{user_id}", {
+    params: { path: { user_id: userId } },
+  });
+
+  if (error) throw new Error(JSON.stringify(error));
+  return data;
+}
+
 export async function get_first_last_name_by_connection_id(
   connectionId: number,
 ): Promise<ConnectionNameResponse> {

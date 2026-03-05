@@ -2,40 +2,27 @@
 
 import { UserCreate } from "../../lib/types";
 import {
+  Autocomplete,
   Box,
   Button,
   Card,
+  Divider,
   Grid,
+  Stack,
   TextField,
   Typography,
-  Divider,
 } from "@mui/material";
-import { useState } from "react";
+import PersonIcon from "@mui/icons-material/Person";
+import BusinessIcon from "@mui/icons-material/Business";
+import ContactsIcon from "@mui/icons-material/Contacts";
+import NoteIcon from "@mui/icons-material/Note";
+import { useEffect, useState } from "react";
+import { getUserFilterOptions } from "../../lib/users";
 
 interface CreateContactProps {
   onSubmit: (data: UserCreate) => void;
   onClose?: () => void;
 }
-
-const contactKeyMap: Record<string, string> = {
-  first_name: "First Name",
-  last_name: "Last Name",
-  company: "Company",
-  sector: "Sector",
-  email: "Email",
-  phone: "Phone",
-  linkedin_url: "LinkedIn URL",
-  how_i_know_them: "How I Know Them",
-  when_i_met_them: "When I Met Them",
-  notes: "Notes",
-};
-
-const fieldGroups = {
-  basic: ["first_name", "last_name"],
-  professional: ["company", "sector"],
-  contact: ["email", "phone", "linkedin_url"],
-  communication: ["how_i_know_them", "when_i_met_them", "notes"],
-};
 
 const defaultData: UserCreate = {
   first_name: "",
@@ -50,50 +37,22 @@ const defaultData: UserCreate = {
   notes: "",
 };
 
-export default function CreateContact({
-  onSubmit,
-  onClose,
-}: CreateContactProps) {
+export default function CreateContact({ onSubmit, onClose }: CreateContactProps) {
   const [form, setForm] = useState<UserCreate>(defaultData);
+  const [companies, setCompanies] = useState<string[]>([]);
+  const [sectors, setSectors] = useState<string[]>([]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  };
+  useEffect(() => {
+    getUserFilterOptions()
+      .then(({ company, sector }) => {
+        setCompanies(company);
+        setSectors(sector);
+      })
+      .catch(() => {});
+  }, []);
 
-  const renderField = (key: string) => {
-    const label = contactKeyMap[key] || key;
-    const value = (form[key as keyof UserCreate] as string) ?? "";
-    const isMultiline = key === "how_i_know_them" || key === "notes";
-    const isDateField = key === "when_i_met_them";
-
-    const input = isDateField ? (
-      <TextField
-        fullWidth
-        size="small"
-        label={label}
-        type="date"
-        value={value}
-        InputLabelProps={{ shrink: true }}
-        onChange={(e) => handleInputChange(key, e.target.value)}
-      />
-    ) : (
-      <TextField
-        fullWidth
-        size="small"
-        label={label}
-        value={value}
-        onChange={(e) => handleInputChange(key, e.target.value)}
-        multiline={isMultiline}
-        minRows={isMultiline ? 3 : undefined}
-        required={key === "first_name" || key === "last_name"}
-      />
-    );
-
-    return (
-      <Grid key={key} size={{ xs: 12, sm: 6 }}>
-        {input}
-      </Grid>
-    );
+  const set = (field: keyof UserCreate, value: string | null) => {
+    setForm((prev) => ({ ...prev, [field]: value ?? "" }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -110,73 +69,112 @@ export default function CreateContact({
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", mt: 6, px: 2 }}>
-      <Card
-        elevation={4}
-        sx={{
-          width: "100%",
-          maxWidth: 900,
-          p: { xs: 2.5, sm: 4 },
-          borderRadius: 3,
-        }}>
+      <Card elevation={4} sx={{ width: "100%", maxWidth: 900, p: { xs: 2.5, sm: 4 }, borderRadius: 3 }}>
         <form onSubmit={handleSubmit}>
-          <Typography variant="h5" fontWeight={600} sx={{ mb: 0.5 }}>
-            New Contact
-          </Typography>
+          <Typography variant="h5" fontWeight={600} sx={{ mb: 0.5 }}>New Contact</Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
             Add a new person to your network
           </Typography>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* BASIC INFO */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Basic Information
-          </Typography>
+          {/* Basic */}
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <PersonIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">Basic Information</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            {fieldGroups.basic.map(renderField)}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth size="small" label="First Name" required
+                value={form.first_name} onChange={(e) => set("first_name", e.target.value)} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth size="small" label="Last Name" required
+                value={form.last_name} onChange={(e) => set("last_name", e.target.value)} />
+            </Grid>
           </Grid>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* PROFESSIONAL INFO */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Professional
-          </Typography>
+          {/* Professional */}
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <BusinessIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">Professional</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            {fieldGroups.professional.map(renderField)}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Autocomplete
+                freeSolo
+                options={companies}
+                value={form.company ?? ""}
+                onInputChange={(_, val) => set("company", val)}
+                renderInput={(params) => (
+                  <TextField {...params} size="small" label="Company" />
+                )}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Autocomplete
+                freeSolo
+                options={sectors}
+                value={form.sector ?? ""}
+                onInputChange={(_, val) => set("sector", val)}
+                renderInput={(params) => (
+                  <TextField {...params} size="small" label="Sector / Industry" />
+                )}
+              />
+            </Grid>
           </Grid>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* CONTACT INFO */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Contact Information
-          </Typography>
+          {/* Contact */}
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <ContactsIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">Contact Information</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            {fieldGroups.contact.map(renderField)}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth size="small" label="Email" type="email"
+                value={form.email ?? ""} onChange={(e) => set("email", e.target.value)} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth size="small" label="Phone"
+                value={form.phone ?? ""} onChange={(e) => set("phone", e.target.value)} />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField fullWidth size="small" label="LinkedIn URL"
+                value={form.linkedin_url ?? ""} onChange={(e) => set("linkedin_url", e.target.value)}
+                placeholder="https://linkedin.com/in/..." />
+            </Grid>
           </Grid>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* COMMUNICATION CONTEXT */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Communication Context
-          </Typography>
+          {/* Context */}
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <NoteIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">Communication Context</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 1 }}>
-            {fieldGroups.communication.map(renderField)}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth size="small" label="How I Know Them" multiline minRows={3}
+                value={form.how_i_know_them ?? ""} onChange={(e) => set("how_i_know_them", e.target.value)} />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth size="small" label="When I Met Them" type="date"
+                value={form.when_i_met_them ?? ""} InputLabelProps={{ shrink: true }}
+                onChange={(e) => set("when_i_met_them", e.target.value)} />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField fullWidth size="small" label="Notes" multiline minRows={3}
+                value={form.notes ?? ""} onChange={(e) => set("notes", e.target.value)} />
+            </Grid>
           </Grid>
 
-          {/* ACTIONS */}
-          <Box
-            sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 4 }}>
-            {onClose && (
-              <Button variant="outlined" onClick={onClose}>
-                Cancel
-              </Button>
-            )}
-            <Button type="submit" variant="contained">
-              Create Contact
-            </Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 4 }}>
+            {onClose && <Button variant="outlined" onClick={onClose}>Cancel</Button>}
+            <Button type="submit" variant="contained">Create Contact</Button>
           </Box>
         </form>
       </Card>

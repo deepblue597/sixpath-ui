@@ -1,14 +1,12 @@
+"use client";
+
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import List from "@mui/material/List";
-import { UserResponse, UserUpdate } from "../../lib/types";
-import { Yaldevi } from "next/font/google";
+import { UserResponse } from "../../lib/types";
 import { Button, Chip, Divider, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { useRouter } from "next/navigation";
 import BusinessIcon from "@mui/icons-material/Business";
 import HubIcon from "@mui/icons-material/Hub";
 import ContactsIcon from "@mui/icons-material/Contacts";
@@ -16,6 +14,8 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import Link from "@mui/material/Link";
+import { useState, useEffect } from "react";
+import { getConnectionsByUserId } from "@/app/lib/connections";
 
 interface ProfileCardProps {
   user: UserResponse;
@@ -28,6 +28,14 @@ export default function ProfileCard({
   onClick,
   onEdit,
 }: ProfileCardProps) {
+  const [connectionCount, setConnectionCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    getConnectionsByUserId(user.id)
+      .then((conns) => setConnectionCount(conns.length))
+      .catch(() => setConnectionCount(null));
+  }, [user.id]);
+
   return (
     <Box
       sx={{
@@ -109,7 +117,7 @@ export default function ProfileCard({
             />
             <Chip
               icon={<ContactsIcon />}
-              label="Connections • 42"
+              label={`Connections • ${connectionCount ?? "…"}`}
               variant="outlined"
               color="default"
             />

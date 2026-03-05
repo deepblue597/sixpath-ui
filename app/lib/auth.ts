@@ -50,3 +50,40 @@ export function getToken(): string | null {
 export function isAuthenticated(): boolean {
   return getToken() !== null;
 }
+
+/**
+ * Request a password reset token for the given username.
+ * Returns the reset token if the username exists, or null if not found.
+ */
+export async function requestPasswordReset(username: string): Promise<string | null> {
+  const res = await fetch(`${BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username }),
+  });
+  if (!res.ok) throw new Error("Failed to request password reset");
+  const data = await res.json();
+  return data.reset_token ?? null;
+}
+
+/**
+ * Reset the user's password using the token from /auth/forgot-password.
+ */
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  const res = await fetch(`${BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token, new_password: newPassword }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.detail ?? "Password reset failed");
+  }
+}
+
+/** Returns true if any user account exists in the database. */
+export async function accountExists(): Promise<boolean> {
+  const res = await fetch(`${BASE_URL}/auth/account-exists`);
+  if (!res.ok) return false;
+  return res.json();
+}

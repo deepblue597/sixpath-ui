@@ -17,18 +17,19 @@ import {
   getAllConnections,
   get_first_last_name_by_connection_id,
 } from "../lib/connections";
+import { getMe } from "../lib/users";
 import AddIcon from "@mui/icons-material/Add";
 export default function ConnectionsPage() {
   const router = useRouter();
   const [connections, setConnections] = useState<ConnectionDisplayRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const [numConnections, setNumConnections] = useState(0);
+  const [myConnectionCount, setMyConnectionCount] = useState(0);
 
   const totalConnections = connections.length;
 
   useEffect(() => {
-    getAllConnections()
-      .then(async (data) => {
+    Promise.all([getAllConnections(), getMe()])
+      .then(async ([data, me]) => {
         const enriched = await Promise.all(
           data.map(async (conn) => {
             try {
@@ -40,7 +41,10 @@ export default function ConnectionsPage() {
           }),
         );
         setConnections(enriched);
-        setNumConnections(enriched.length);
+        const myCount = enriched.filter(
+          (c) => c.person1_id === me.id || c.person2_id === me.id,
+        ).length;
+        setMyConnectionCount(myCount);
       })
       .catch((err) => console.error("Failed to fetch connections:", err))
       .finally(() => setLoading(false));
@@ -88,7 +92,7 @@ export default function ConnectionsPage() {
       </Box>
       <ConnectionStats
         totalConnections={totalConnections}
-        myConnections={numConnections}
+        myConnections={myConnectionCount}
       />
       <ConnectionsTable
         data={connections}

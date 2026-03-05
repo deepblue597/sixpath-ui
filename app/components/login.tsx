@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { login } from "../lib/auth";
+import { login, accountExists } from "../lib/auth";
 
 export default function Login() {
   const router = useRouter();
@@ -22,6 +22,11 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [hasAccount, setHasAccount] = useState(true);
+
+  useEffect(() => {
+    accountExists().then(setHasAccount);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -110,13 +115,25 @@ export default function Login() {
 
           <Button
             component={Link}
-            href="/register"
-            variant="outlined"
-            color="secondary"
-            fullWidth
-            sx={{ py: 1.5 }}>
-            Sign Up
+            href="/forgot-password"
+            variant="text"
+            color="inherit"
+            size="small"
+            sx={{ alignSelf: "center", color: "text.secondary" }}>
+            Forgot password?
           </Button>
+
+          {!hasAccount && (
+            <Button
+              component={Link}
+              href="/register"
+              variant="outlined"
+              color="secondary"
+              fullWidth
+              sx={{ py: 1.5 }}>
+              Create Account
+            </Button>
+          )}
         </Stack>
 
         {/* Optional Footer */}

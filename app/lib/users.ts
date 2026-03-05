@@ -3,7 +3,7 @@ import type { UserResponse, UserUpdate, UserCreate } from "./types";
 
 /**
  * GET /users/
- * Returns all contacts/connections of the authenticated user.
+ * Returns a single page of contacts/connections of the authenticated user.
  */
 export async function getAllUsers(params?: {
   offset?: number;
@@ -15,6 +15,24 @@ export async function getAllUsers(params?: {
 
   if (error) throw new Error(JSON.stringify(error));
   return data;
+}
+
+/**
+ * Fetches every user by paging through the API until all results are returned.
+ */
+export async function getAllUsersPaginated(): Promise<UserResponse[]> {
+  const PAGE_SIZE = 100;
+  const results: UserResponse[] = [];
+  let offset = 0;
+
+  while (true) {
+    const page = await getAllUsers({ limit: PAGE_SIZE, offset });
+    results.push(...page);
+    if (page.length < PAGE_SIZE) break;
+    offset += PAGE_SIZE;
+  }
+
+  return results;
 }
 
 /**

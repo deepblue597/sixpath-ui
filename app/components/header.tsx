@@ -13,11 +13,15 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { logout } from "@/app/lib/auth";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import { useColorMode } from "./ThemeRegistry";
 
 export default function HeaderBar({ onClick }: { onClick: () => void }) {
   const router = useRouter();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const { mode, toggleColorMode } = useColorMode();
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -55,6 +59,9 @@ export default function HeaderBar({ onClick }: { onClick: () => void }) {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             SixPath
           </Typography>
+          <IconButton onClick={toggleColorMode} color="inherit" aria-label="toggle dark mode">
+            {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
           <div>
             <IconButton
               size="large"

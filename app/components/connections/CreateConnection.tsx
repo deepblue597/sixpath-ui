@@ -1,25 +1,34 @@
 "use client";
 
-import { ConnectionCreate } from "../../lib/types";
-import { getUserById } from "../../lib/users";
+import { ConnectionCreate, UserResponse } from "../../lib/types";
+import { getAllUsersPaginated } from "../../lib/users";
 import {
+  Autocomplete,
   Box,
   Button,
   Card,
+  Divider,
   Grid,
+  MenuItem,
+  Rating,
+  Stack,
   TextField,
   Typography,
-  Divider,
-  Stack,
-  FormHelperText,
 } from "@mui/material";
-import React from "react";
-import NumberField from "../NumberField";
+import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import HubIcon from "@mui/icons-material/Hub";
+import NoteIcon from "@mui/icons-material/Note";
+import React, { useEffect, useState } from "react";
 
 interface CreateConnectionProps {
   onSubmit: (data: ConnectionCreate) => void;
   onClose?: () => void;
 }
+
+const RELATIONSHIP_OPTIONS = [
+  "Colleague", "Friend", "Mentor", "Mentee", "Client",
+  "Manager", "Acquaintance", "Partner", "Other",
+];
 
 const defaultData: ConnectionCreate = {
   person1_id: 0,
@@ -31,177 +40,41 @@ const defaultData: ConnectionCreate = {
   notes: "",
 };
 
-const connectionKeyMap: Record<string, string> = {
-  person1_id: "Person 1 ID",
-  person2_id: "Person 2 ID",
-  relationship: "Relationship",
-  strength: "Strength",
-  last_interaction: "Last Interaction",
-  context: "Context",
-  notes: "Notes",
-};
+export default function CreateConnection({ onSubmit, onClose }: CreateConnectionProps) {
+  const [formData, setFormData] = useState<ConnectionCreate>(defaultData);
+  const [users, setUsers] = useState<UserResponse[]>([]);
+  const [person1, setPerson1] = useState<UserResponse | null>(null);
+  const [person2, setPerson2] = useState<UserResponse | null>(null);
 
-export default function CreateConnection({
-  onSubmit,
-  onClose,
-}: CreateConnectionProps) {
-  const [formData, setFormData] = React.useState<ConnectionCreate>(defaultData);
-  const [person1Name, setPerson1Name] = React.useState<string | null>(null);
-  const [person2Name, setPerson2Name] = React.useState<string | null>(null);
+  useEffect(() => {
+    getAllUsersPaginated().then(setUsers).catch(() => {});
+  }, []);
 
-  // Live name lookup for person1_id
-  React.useEffect(() => {
-    const id = formData.person1_id;
-    if (!id) {
-      setPerson1Name(null);
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      getUserById(id)
-        .then((user) => {
-          if (!cancelled)
-            setPerson1Name(`${user.first_name} ${user.last_name}`);
-        })
-        .catch(() => {
-          if (!cancelled) setPerson1Name("User not found");
-        });
-    }, 500);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [formData.person1_id]);
-
-  // Live name lookup for person2_id
-  React.useEffect(() => {
-    const id = formData.person2_id;
-    if (!id) {
-      setPerson2Name(null);
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      getUserById(id)
-        .then((user) => {
-          if (!cancelled)
-            setPerson2Name(`${user.first_name} ${user.last_name}`);
-        })
-        .catch(() => {
-          if (!cancelled) setPerson2Name("User not found");
-        });
-    }, 500);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [formData.person2_id]);
-
-  const handleChange = (
-    key: keyof ConnectionCreate,
-    value: string | number | undefined,
-  ) => {
+  const handleChange = (key: keyof ConnectionCreate, value: string | number | undefined | null) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const requiredFields: (keyof ConnectionCreate)[] = [
-      "person1_id",
-      "person2_id",
-    ];
+    const requiredFields: (keyof ConnectionCreate)[] = ["person1_id", "person2_id"];
     const cleaned = Object.fromEntries(
       Object.entries(formData).map(([k, v]) => [
         k,
-        !requiredFields.includes(k as keyof ConnectionCreate) && v === ""
-          ? null
-          : v,
+        !requiredFields.includes(k as keyof ConnectionCreate) && v === "" ? null : v,
       ]),
     ) as ConnectionCreate;
     onSubmit(cleaned);
   };
 
-  const renderField = (key: keyof ConnectionCreate) => {
-    const label = connectionKeyMap[key] || key;
-    const value = formData[key] ?? "";
-    const isIdField = key === "person1_id" || key === "person2_id";
-    const isMultilineField = key === "context" || key === "notes";
-
-    let input;
-    if (isIdField) {
-      const namePrev = key === "person1_id" ? person1Name : person2Name;
-      input = (
-        <Box>
-          <NumberField
-            label={label}
-            value={typeof value === "number" ? value : undefined}
-            onValueChange={(val) =>
-              handleChange(key as keyof ConnectionCreate, val ?? undefined)
-            }
-          />
-          {namePrev && (
-            <FormHelperText sx={{ ml: 1 }}>{namePrev}</FormHelperText>
-          )}
-        </Box>
-      );
-    } else if (key === "strength") {
-      input = (
-        <NumberField
-          min={0}
-          max={5}
-          label={label}
-          value={typeof value === "number" ? value : undefined}
-          onValueChange={(val) => handleChange("strength", val ?? undefined)}
-        />
-      );
-    } else if (key === "last_interaction") {
-      input = (
-        <TextField
-          fullWidth
-          size="small"
-          label={label}
-          type="date"
-          value={typeof value === "string" ? value : ""}
-          InputLabelProps={{ shrink: true }}
-          onChange={(e) => handleChange(key, e.target.value)}
-        />
-      );
-    } else {
-      input = (
-        <TextField
-          fullWidth
-          size="small"
-          label={label}
-          value={typeof value === "string" ? value : ""}
-          onChange={(e) => handleChange(key, e.target.value)}
-          multiline={isMultilineField}
-          minRows={isMultilineField ? 4 : undefined}
-        />
-      );
-    }
-
-    return (
-      <Grid key={key} size={{ xs: 12, sm: isMultilineField ? 12 : 6 }}>
-        {input}
-      </Grid>
-    );
-  };
+  const canSubmit = formData.person1_id && formData.person2_id &&
+    formData.person1_id !== formData.person2_id;
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-      <Card
-        elevation={4}
-        sx={{
-          width: "100%",
-          maxWidth: 900,
-          p: { xs: 2, sm: 4 },
-          borderRadius: 3,
-        }}>
+      <Card elevation={4} sx={{ width: "100%", maxWidth: 900, p: { xs: 2, sm: 4 }, borderRadius: 3 }}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={0.5} sx={{ mb: 2 }}>
-            <Typography variant="h5" fontWeight={600}>
-              New Connection
-            </Typography>
+            <Typography variant="h5" fontWeight={600}>New Connection</Typography>
             <Typography variant="body2" color="text.secondary">
               Link two people and describe their relationship
             </Typography>
@@ -209,53 +82,113 @@ export default function CreateConnection({
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* IDs */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            People
-          </Typography>
+          {/* People */}
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <PeopleAltIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">People</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            {(["person1_id", "person2_id"] as (keyof ConnectionCreate)[]).map(
-              renderField,
-            )}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Autocomplete
+                options={users.filter((u) => u.id !== person2?.id)}
+                getOptionKey={(u) => u.id}
+                getOptionLabel={(u) => `${u.first_name} ${u.last_name}`}
+                value={person1}
+                onChange={(_, val) => {
+                  setPerson1(val);
+                  handleChange("person1_id", val?.id ?? 0);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Person 1" size="small" required />
+                )}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Autocomplete
+                options={users.filter((u) => u.id !== person1?.id)}
+                getOptionKey={(u) => u.id}
+                getOptionLabel={(u) => `${u.first_name} ${u.last_name}`}
+                value={person2}
+                onChange={(_, val) => {
+                  setPerson2(val);
+                  handleChange("person2_id", val?.id ?? 0);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Person 2" size="small" required />
+                )}
+              />
+            </Grid>
           </Grid>
 
           <Divider sx={{ mb: 3 }} />
 
-          {/* Relationship */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Relationship Details
-          </Typography>
+          {/* Relationship Details */}
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <HubIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">Relationship Details</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 3 }}>
-            {(
-              [
-                "relationship",
-                "strength",
-                "last_interaction",
-              ] as (keyof ConnectionCreate)[]
-            ).map(renderField)}
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                select fullWidth size="small" label="Relationship"
+                value={formData.relationship ?? ""}
+                onChange={(e) => handleChange("relationship", e.target.value)}
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                {RELATIONSHIP_OPTIONS.map((opt) => (
+                  <MenuItem key={opt} value={opt.toLowerCase()}>{opt}</MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                fullWidth size="small" label="Last Interaction" type="date"
+                value={typeof formData.last_interaction === "string" ? formData.last_interaction : ""}
+                InputLabelProps={{ shrink: true }}
+                onChange={(e) => handleChange("last_interaction", e.target.value)}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Stack spacing={0.5}>
+                <Typography variant="body2" color="text.secondary">
+                  Connection Strength
+                </Typography>
+                <Rating
+                  value={formData.strength ?? 0}
+                  onChange={(_, val) => handleChange("strength", val ?? undefined)}
+                  size="large"
+                />
+              </Stack>
+            </Grid>
           </Grid>
 
           <Divider sx={{ mb: 3 }} />
 
           {/* Context & Notes */}
-          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-            Context &amp; Notes
-          </Typography>
+          <Stack direction="row" alignItems="center" spacing={1} sx={{ mb: 1 }}>
+            <NoteIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2" color="text.secondary">Context &amp; Notes</Typography>
+          </Stack>
           <Grid container spacing={2} sx={{ mb: 1 }}>
-            {(["context", "notes"] as (keyof ConnectionCreate)[]).map(
-              renderField,
-            )}
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth size="small" label="Context" multiline minRows={3}
+                value={typeof formData.context === "string" ? formData.context : ""}
+                onChange={(e) => handleChange("context", e.target.value)}
+              />
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                fullWidth size="small" label="Notes" multiline minRows={3}
+                value={typeof formData.notes === "string" ? formData.notes : ""}
+                onChange={(e) => handleChange("notes", e.target.value)}
+              />
+            </Grid>
           </Grid>
 
-          {/* Actions */}
-          <Box
-            sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 4 }}>
-            {onClose && (
-              <Button variant="outlined" onClick={onClose}>
-                Cancel
-              </Button>
-            )}
-            <Button type="submit" variant="contained">
+          <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1, mt: 4 }}>
+            {onClose && <Button variant="outlined" onClick={onClose}>Cancel</Button>}
+            <Button type="submit" variant="contained" disabled={!canSubmit}>
               Create Connection
             </Button>
           </Box>

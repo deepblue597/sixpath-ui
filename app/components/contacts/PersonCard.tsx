@@ -26,7 +26,8 @@ import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import NoteIcon from "@mui/icons-material/Note";
 import { AccountCircle } from "@mui/icons-material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getConnectionsByUserId } from "@/app/lib/connections";
 
 interface PersonCardProps {
   user: UserResponse;
@@ -40,6 +41,13 @@ export default function PersonCard({
   onDelete,
 }: PersonCardProps) {
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [connectionCount, setConnectionCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    getConnectionsByUserId(user.id)
+      .then((conns) => setConnectionCount(conns.length))
+      .catch(() => setConnectionCount(null));
+  }, [user.id]);
   return (
     <Box
       sx={{
@@ -127,7 +135,7 @@ export default function PersonCard({
             />
             <Chip
               icon={<ContactsIcon />}
-              label="Connections • 42"
+              label={`Connections • ${connectionCount ?? "…"}`}
               variant="outlined"
               color="default"
             />

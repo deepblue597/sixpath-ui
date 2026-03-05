@@ -44,6 +44,8 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Entrypoint replaces the build-time placeholder with the runtime env value
 COPY --chmod=755 entrypoint.sh ./entrypoint.sh
 
+RUN chown nextjs:nodejs /app
+
 USER nextjs
 
 EXPOSE 3000
