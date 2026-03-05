@@ -25,7 +25,11 @@ export const client = createClient<paths>({
 
     const response = await fetch(request);
 
-    if (response.status === 401 && typeof window !== "undefined" && !isRedirecting) {
+    if (
+      response.status === 401 &&
+      typeof window !== "undefined" &&
+      !isRedirecting
+    ) {
       isRedirecting = true;
       localStorage.removeItem("token");
       window.location.href = "/";
