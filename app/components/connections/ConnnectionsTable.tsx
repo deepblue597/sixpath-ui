@@ -3,16 +3,23 @@
 import { ConnectionResponse } from "../../lib/types";
 import {
   Avatar,
-  Box,
   Chip,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
   Paper,
   Rating,
+  Select,
   Stack,
+  TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
+import SearchIcon from "@mui/icons-material/Search";
+import { useMemo, useState } from "react";
 
 export type ConnectionDisplayRow = ConnectionResponse & {
   user1_full_name?: string;
@@ -157,19 +164,98 @@ const columns: GridColDef<ConnectionDisplayRow>[] = [
 
 const paginationModel = { pageSize: 10, page: 0 };
 
+const relationshipTypes = ["friend", "colleague", "mentor", "client", "acquaintance"];
+const strengthOptions = [1, 2, 3, 4, 5];
+
 export default function ConnectionsTable({ data, onClick }: ContactsTableProps) {
+  const [search, setSearch] = useState("");
+  const [strengthFilter, setStrengthFilter] = useState<number | "">("");
+  const [relationshipFilter, setRelationshipFilter] = useState<string>("");
+
+  const filteredData = useMemo(() => {
+    let result = data;
+
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (row) =>
+          (row.user1_full_name?.toLowerCase().includes(q)) ||
+          (row.user2_full_name?.toLowerCase().includes(q))
+      );
+    }
+
+    if (strengthFilter !== "") {
+      result = result.filter((row) => row.strength === strengthFilter);
+    }
+
+    if (relationshipFilter) {
+      result = result.filter(
+        (row) => row.relationship?.toLowerCase() === relationshipFilter.toLowerCase()
+      );
+    }
+
+    return result;
+  }, [data, search, strengthFilter, relationshipFilter]);
+
   return (
     <Paper
       elevation={3}
       sx={{
-        height: 520,
         width: "90%",
         borderRadius: 3,
         overflow: "hidden",
         margin: "auto",
       }}>
+      <Stack direction="row" spacing={2} sx={{ p: 2, alignItems: "center" }}>
+        <TextField
+          size="small"
+          placeholder="Search by person name..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ minWidth: 260 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Strength</InputLabel>
+          <Select
+            value={strengthFilter}
+            label="Strength"
+            onChange={(e) => setStrengthFilter(e.target.value as number | "")}
+          >
+            <MenuItem value="">All</MenuItem>
+            {strengthOptions.map((s) => (
+              <MenuItem key={s} value={s}>
+                <Rating value={s} max={5} readOnly size="small" />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Relationship</InputLabel>
+          <Select
+            value={relationshipFilter}
+            label="Relationship"
+            onChange={(e) => setRelationshipFilter(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            {relationshipTypes.map((r) => (
+              <MenuItem key={r} value={r} sx={{ textTransform: "capitalize" }}>
+                {r.charAt(0).toUpperCase() + r.slice(1)}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
       <DataGrid
-        rows={data}
+        rows={filteredData}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[10, 25, 50]}

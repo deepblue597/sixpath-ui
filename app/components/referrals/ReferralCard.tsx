@@ -17,6 +17,7 @@ import { ReferralResponse } from "../../lib/types";
 
 interface ReferralCardProps {
   referral: ReferralResponse;
+  referrerName?: string;
   onEdit?: (id: number) => void;
 }
 
@@ -29,7 +30,7 @@ function formatDate(dateString: string | null | undefined) {
   });
 }
 
-export default function ReferralCard({ referral, onEdit }: ReferralCardProps) {
+export default function ReferralCard({ referral, referrerName, onEdit }: ReferralCardProps) {
   return (
     <Card
       sx={{
@@ -55,7 +56,7 @@ export default function ReferralCard({ referral, onEdit }: ReferralCardProps) {
               Referral #{referral.id}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              Referrer ID: {referral.referrer_id}
+              Referrer: {referrerName ?? referral.referrer_id}
             </Typography>
           </Box>
           {referral.status && (

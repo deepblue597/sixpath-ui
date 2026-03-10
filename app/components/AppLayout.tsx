@@ -20,6 +20,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ContactsIcon from "@mui/icons-material/Contacts";
 import GroupIcon from "@mui/icons-material/Group";
+import SettingsIcon from "@mui/icons-material/Settings";
 import HeaderBar from "./header";
 
 interface DrawerItem {
@@ -46,6 +47,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { text: "Contacts", icon: ContactsIcon, href: "/contacts" },
     { text: "Connections", icon: GroupIcon, href: "/connections" },
     { text: "Referrals", icon: InboxIcon, href: "/referrals" },
+    { text: "Settings", icon: SettingsIcon, href: "/settings" },
   ];
 
   const DrawerList = (

@@ -1,14 +1,30 @@
 "use client";
 
 import { ReferralResponse } from "@/app/lib/types";
-import { Box, Chip, Paper, Stack, Tooltip, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import { GridColDef } from "@mui/x-data-grid";
 import { DataGrid } from "@mui/x-data-grid";
+import { useMemo, useState } from "react";
+
+export type ReferralDisplayRow = ReferralResponse & {
+  referrer_name?: string;
+};
 
 interface ReferralTableProps {
-  data: ReferralResponse[];
-  onClick?: (row: ReferralResponse) => void;
+  data: ReferralDisplayRow[];
+  onClick?: (row: ReferralDisplayRow) => void;
 }
 
 type StatusColor = "default" | "primary" | "warning" | "success" | "error" | "info";
@@ -26,7 +42,18 @@ function formatDate(value?: string | null) {
   return new Date(value).toLocaleDateString("en-GB");
 }
 
-const columns: GridColDef<ReferralResponse>[] = [
+const columns: GridColDef<ReferralDisplayRow>[] = [
+  {
+    field: "referrer_name",
+    headerName: "Referrer",
+    flex: 1.2,
+    minWidth: 150,
+    renderCell: ({ value }) => (
+      <Typography variant="body2" fontWeight={500}>
+        {value ?? "—"}
+      </Typography>
+    ),
+  },
   {
     field: "company",
     headerName: "Role",
@@ -108,19 +135,50 @@ const columns: GridColDef<ReferralResponse>[] = [
 
 const paginationModel = { pageSize: 10, page: 0 };
 
+const statusOptions = Object.keys(statusConfig);
+
 export default function RefTable({ data, onClick }: ReferralTableProps) {
+  const [statusFilter, setStatusFilter] = useState<string>("");
+
+  const filteredData = useMemo(() => {
+    if (!statusFilter) return data;
+    return data.filter(
+      (row) => row.status?.toLowerCase() === statusFilter.toLowerCase()
+    );
+  }, [data, statusFilter]);
+
   return (
     <Paper
       elevation={3}
       sx={{
-        height: 520,
         width: "90%",
         borderRadius: 3,
         overflow: "hidden",
         margin: "auto",
       }}>
+      <Stack direction="row" spacing={2} sx={{ p: 2, alignItems: "center" }}>
+        <FormControl size="small" sx={{ minWidth: 180 }}>
+          <InputLabel>Status</InputLabel>
+          <Select
+            value={statusFilter}
+            label="Status"
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <MenuItem value="">All</MenuItem>
+            {statusOptions.map((key) => (
+              <MenuItem key={key} value={key}>
+                <Chip
+                  label={statusConfig[key].label}
+                  color={statusConfig[key].color}
+                  size="small"
+                />
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Stack>
       <DataGrid
-        rows={data}
+        rows={filteredData}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[10, 25, 50]}

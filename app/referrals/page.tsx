@@ -8,20 +8,39 @@ import {
 } from "@mui/material";
 import RefStats from "@/app/components/referrals/RefStats";
 import { useRouter } from "next/navigation";
-import RefTable from "../components/referrals/RefTable";
+import RefTable, { ReferralDisplayRow } from "../components/referrals/RefTable";
 import { useEffect, useState } from "react";
-import { ReferralResponse } from "../lib/types";
 import { getAllReferrals } from "../lib/referrals";
+import { getUserById } from "../lib/users";
 import AddIcon from "@mui/icons-material/Add";
 
 export default function ReferralsPage() {
   const router = useRouter();
-  const [referrals, setReferrals] = useState<ReferralResponse[]>([]); // Replace with actual referral data fetching
+  const [referrals, setReferrals] = useState<ReferralDisplayRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getAllReferrals()
-      .then((data) => setReferrals(data))
+      .then(async (data) => {
+        const uniqueReferrerIds = [...new Set(data.map((r) => r.referrer_id))];
+        const nameMap = new Map<number, string>();
+        await Promise.all(
+          uniqueReferrerIds.map(async (id) => {
+            try {
+              const user = await getUserById(id);
+              nameMap.set(id, `${user.first_name} ${user.last_name}`);
+            } catch {
+              // ignore
+            }
+          }),
+        );
+        setReferrals(
+          data.map((r) => ({
+            ...r,
+            referrer_name: nameMap.get(r.referrer_id) ?? undefined,
+          })),
+        );
+      })
       .catch((err) => console.error("Failed to fetch referrals:", err))
       .finally(() => setLoading(false));
   }, []);
@@ -74,7 +93,7 @@ export default function ReferralsPage() {
         totalReferrers={totalReferrers}
       />
       <RefTable
-        data={referrals} // Replace with actual referral data
+        data={referrals}
         onClick={(row) => router.push(`/referrals/${row.id}`)}
       />
     </Box>

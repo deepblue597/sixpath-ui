@@ -31,8 +31,6 @@ const defaultData: ConnectionUpdate = {
 };
 
 const connectionKeyMap: Record<string, string> = {
-  person1_id: "Person 1 ID",
-  person2_id: "Person 2 ID",
   relationship: "Relationship",
   strength: "Strength",
   last_interaction: "Last Interaction",
@@ -137,6 +135,24 @@ export default function EditConnection({
         </Stack>
 
         <Divider sx={{ mb: 3 }} />
+
+        {/* People (read-only) */}
+        <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+          <TextField
+            fullWidth
+            size="small"
+            label="Person 1"
+            value={names?.user1_full_name ?? "—"}
+            disabled
+          />
+          <TextField
+            fullWidth
+            size="small"
+            label="Person 2"
+            value={names?.user2_full_name ?? "—"}
+            disabled
+          />
+        </Stack>
 
         {/* Fields */}
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>

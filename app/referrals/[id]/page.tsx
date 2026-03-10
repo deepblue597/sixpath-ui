@@ -4,6 +4,7 @@ import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ReferralResponse } from "@/app/lib/types";
 import { getReferralById } from "@/app/lib/referrals";
+import { getUserById } from "@/app/lib/users";
 import { Box, CircularProgress, Typography } from "@mui/material";
 import ReferralCard from "@/app/components/referrals/ReferralCard";
 
@@ -12,11 +13,20 @@ export default function ReferralPage() {
   const { id } = useParams();
   const referralId = Number(id);
   const [referral, setReferral] = useState<ReferralResponse | null>(null);
+  const [referrerName, setReferrerName] = useState<string | undefined>();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getReferralById(referralId)
-      .then((data) => setReferral(data))
+      .then(async (data) => {
+        setReferral(data);
+        try {
+          const user = await getUserById(data.referrer_id);
+          setReferrerName(`${user.first_name} ${user.last_name}`);
+        } catch {
+          // fallback to showing ID
+        }
+      })
       .catch((err) => console.error("Failed to fetch referral data:", err))
       .finally(() => setLoading(false));
   }, [referralId]);
@@ -42,6 +52,7 @@ export default function ReferralPage() {
   return (
     <ReferralCard
       referral={referral}
+      referrerName={referrerName}
       onEdit={(id) => {
         router.push(`/referrals/${id}/edit`);
       }}

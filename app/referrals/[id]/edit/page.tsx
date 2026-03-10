@@ -48,8 +48,7 @@ export default function EditReferralPage() {
       <EditReferral
         referral={referral}
         onClose={() => {
-          router.push("/referrals");
-          console.log("Closed");
+          router.push(`/referrals/${referralId}`);
         }}
         onUpdate={(updatedData: Partial<ReferralUpdate>) => {
           updateReferral(referralId, updatedData as ReferralUpdate)
